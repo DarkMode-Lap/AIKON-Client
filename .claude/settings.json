@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:fix)",
+      "Bash(npm run format)",
+      "Bash(npm run format:check)",
+      "Bash(npm ci)",
+      "Bash(npm install *)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git checkout*)",
+      "Bash(git pull*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr checkout*)",
+      "Bash(gh issue list*)",
+      "Bash(gh issue view*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '\n────────────────────────────────────────\nBefore pushing:\n  npm run typecheck && npm run lint && npm run format:check\n\nHarness: new pattern or anti-pattern found this session?\n  → It should already be in CLAUDE.md / .claude/rules/\n  → Run /update-harness for a full audit\n────────────────────────────────────────'"
+          }
+        ]
+      }
+    ]
+  }
+}
