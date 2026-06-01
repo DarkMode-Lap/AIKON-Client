@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, ArrowLeft, ArrowRight, Camera, RefreshCw, Check, X } from 'lucide-react'
@@ -30,6 +30,12 @@ export default function CreatePage() {
     photoPreview: null,
   })
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    return () => {
+      if (form.photoPreview) URL.revokeObjectURL(form.photoPreview)
+    }
+  }, [form.photoPreview])
 
   function canProceed(): boolean {
     if (step === 1) return form.nickname.trim().length >= 2
