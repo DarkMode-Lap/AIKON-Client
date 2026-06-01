@@ -59,11 +59,13 @@ export default function ResultPage() {
           url: window.location.href,
         })
         .catch(() => null)
-    } else {
+    } else if (navigator.clipboard) {
       navigator.clipboard
         .writeText(window.location.href)
         .then(() => toast.success('링크가 복사됐어요! 📋'))
         .catch(() => toast.error('링크 복사에 실패했어요. 😢'))
+    } else {
+      toast.error('이 브라우저에서는 링크 복사를 지원하지 않아요. 😢')
     }
   }
 
