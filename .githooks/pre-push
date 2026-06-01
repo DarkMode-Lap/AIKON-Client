@@ -1,0 +1,17 @@
+#!/bin/sh
+# Block direct pushes to protected branches.
+
+PROTECTED="main develop"
+CURRENT=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+for branch in $PROTECTED; do
+  if [ "$CURRENT" = "$branch" ]; then
+    echo ""
+    echo "  ✖ Direct push to '$branch' is not allowed."
+    echo "  Create a feature branch and open a PR instead."
+    echo ""
+    exit 1
+  fi
+done
+
+exit 0
