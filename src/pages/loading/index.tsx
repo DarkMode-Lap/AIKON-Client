@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LOADING_MESSAGES } from '@/shared/lib/constants'
@@ -47,14 +47,13 @@ export default function LoadingPage() {
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [emojiIdx, setEmojiIdx] = useState(0)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
   useEffect(() => {
     const totalMs = 35_000
     const tick = 200
     let elapsed = 0
+    let timerId: ReturnType<typeof setInterval> | null = null
 
-    timerRef.current = setInterval(() => {
+    timerId = setInterval(() => {
       elapsed += tick
       const pct = Math.min((elapsed / totalMs) * 100, 97)
       setProgress(pct)
@@ -69,7 +68,7 @@ export default function LoadingPage() {
     let nextTimeoutId: ReturnType<typeof setTimeout> | null = null
 
     const demoTimeout = setTimeout(() => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerId) clearInterval(timerId)
       setProgress(100)
       setMsgIndex(LOADING_MESSAGES.length - 1)
       nextTimeoutId = setTimeout(() => {
@@ -78,7 +77,7 @@ export default function LoadingPage() {
     }, 35_000)
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerId) clearInterval(timerId)
       clearInterval(emojiTimer)
       clearTimeout(demoTimeout)
       if (nextTimeoutId) clearTimeout(nextTimeoutId)
