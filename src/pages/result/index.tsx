@@ -35,12 +35,19 @@ export default function ResultPage() {
       toast('이미지 저장 기능은 백엔드 연결 후 활성화돼요 📁')
       return
     }
-    const a = document.createElement('a')
-    a.href = imageUrl
-    a.download = `aikon_${nickname}_${id}.jpg`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    fetch(imageUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `aikon_${nickname}_${id}.jpg`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      })
+      .catch(() => toast.error('이미지 다운로드에 실패했어요. 😢'))
   }
 
   function handleShare() {
