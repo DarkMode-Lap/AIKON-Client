@@ -159,7 +159,10 @@ export default function CreatePage() {
                 preview={form.photoPreview}
                 fileInputRef={fileInputRef}
                 onFileChange={handleFileChange}
-                onReset={() => setForm((f) => ({ ...f, photoPreview: null, photoFile: null }))}
+                onReset={() => {
+                  setForm((f) => ({ ...f, photoPreview: null, photoFile: null }))
+                  if (fileInputRef.current) fileInputRef.current.value = ''
+                }}
               />
             )}
           </motion.div>
