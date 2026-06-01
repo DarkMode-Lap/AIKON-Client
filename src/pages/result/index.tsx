@@ -38,7 +38,9 @@ export default function ResultPage() {
     const a = document.createElement('a')
     a.href = imageUrl
     a.download = `aikon_${nickname}_${id}.jpg`
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
   }
 
   function handleShare() {
