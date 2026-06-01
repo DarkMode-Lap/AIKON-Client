@@ -106,7 +106,7 @@ export default function ResultPage() {
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
             <QRCodeSVG
-              value={`${window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}`}
+              value={`${window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}${imageUrl ? `&imageUrl=${encodeURIComponent(imageUrl)}` : ''}`}
               size={140}
               bgColor="#ffffff"
               fgColor="#1e0f3f"
