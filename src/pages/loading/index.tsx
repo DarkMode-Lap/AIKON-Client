@@ -66,10 +66,13 @@ export default function LoadingPage() {
       setEmojiIdx((i) => (i + 1) % MAGIC_EMOJIS.length)
     }, 2800)
 
+    let nextTimeoutId: ReturnType<typeof setTimeout> | null = null
+
     const demoTimeout = setTimeout(() => {
       if (timerRef.current) clearInterval(timerRef.current)
       setProgress(100)
-      setTimeout(() => {
+      setMsgIndex(LOADING_MESSAGES.length - 1)
+      nextTimeoutId = setTimeout(() => {
         navigate(`/result/demo-${jobId}?nickname=${encodeURIComponent(nickname)}&style=${style}`)
       }, 600)
     }, 35_000)
@@ -78,6 +81,7 @@ export default function LoadingPage() {
       if (timerRef.current) clearInterval(timerRef.current)
       clearInterval(emojiTimer)
       clearTimeout(demoTimeout)
+      if (nextTimeoutId) clearTimeout(nextTimeoutId)
     }
   }, [navigate, jobId, nickname, style])
 
