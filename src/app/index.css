@@ -30,29 +30,49 @@ body {
   }
 }
 
-.fade-in   { animation: fadeIn 0.4s 0s    ease both; }
-.fade-in-1 { animation: fadeIn 0.4s 0.08s ease both; }
-.fade-in-2 { animation: fadeIn 0.4s 0.16s ease both; }
-.fade-in-3 { animation: fadeIn 0.4s 0.24s ease both; }
-.fade-in-4 { animation: fadeIn 0.4s 0.32s ease both; }
-.fade-in-5 { animation: fadeIn 0.4s 0.40s ease both; }
+.fade-in {
+  animation: fadeIn 0.4s 0s ease both;
+}
+.fade-in-1 {
+  animation: fadeIn 0.4s 0.08s ease both;
+}
+.fade-in-2 {
+  animation: fadeIn 0.4s 0.16s ease both;
+}
+.fade-in-3 {
+  animation: fadeIn 0.4s 0.24s ease both;
+}
+.fade-in-4 {
+  animation: fadeIn 0.4s 0.32s ease both;
+}
+.fade-in-5 {
+  animation: fadeIn 0.4s 0.4s ease both;
+}
 
 /* Magic gradient button */
 @keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .btn-magic {
-  background: linear-gradient(135deg, #CA83FF, #FF53BD, #CA83FF);
+  background: linear-gradient(135deg, #ca83ff, #ff53bd, #ca83ff);
   background-size: 200% 200%;
   animation: gradientShift 3s ease infinite;
   border-radius: 14px;
   font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 .btn-magic:active {

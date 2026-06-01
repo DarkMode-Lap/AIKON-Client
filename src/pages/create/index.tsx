@@ -259,7 +259,9 @@ function StepStyle({
             onClick={() => onSelect(style.id)}
             className={cn(
               'relative rounded-2xl p-4 text-left border-2 transition-all overflow-hidden',
-              selected === style.id ? 'border-violet-500' : 'border-gray-200 hover:border-violet-300',
+              selected === style.id
+                ? 'border-violet-500'
+                : 'border-gray-200 hover:border-violet-300',
             )}
           >
             <div

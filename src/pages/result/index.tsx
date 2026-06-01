@@ -139,7 +139,9 @@ export default function ResultPage() {
           새로운 아바타 만들기
         </button>
 
-        <p className="text-center text-xs text-gray-400 pb-4">© 광주AI교육원 · AI PASS 발급 시스템</p>
+        <p className="text-center text-xs text-gray-400 pb-4">
+          © 광주AI교육원 · AI PASS 발급 시스템
+        </p>
       </div>
     </div>
   )
