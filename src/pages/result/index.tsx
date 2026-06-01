@@ -45,7 +45,7 @@ export default function ResultPage() {
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
-        URL.revokeObjectURL(url)
+        setTimeout(() => URL.revokeObjectURL(url), 100)
       })
       .catch(() => toast.error('이미지 다운로드에 실패했어요. 😢'))
   }
