@@ -67,6 +67,10 @@ export default function CreatePage() {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast.error('이미지 파일만 업로드할 수 있어요! 😢')
+      return
+    }
     const url = URL.createObjectURL(file)
     setForm((f) => ({ ...f, photoFile: file, photoPreview: url }))
     toast.success('사진이 선택됐어요! 🖼️')
