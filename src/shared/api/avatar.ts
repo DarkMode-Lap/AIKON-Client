@@ -12,12 +12,13 @@ export interface GetAvatarRes {
   nickname: string
   imageUrl: string | null
   passUrl: string | null
+  generationStatus: 'WAITING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'RETRYING' | null
 }
 
 const STYLE_MAP: Record<AvatarStyle, string> = {
   ghibli: 'GHIBLI',
   disney: 'DISNEY_PIXAR',
-  hanbok: 'TRADITIONAL_HANOK',
+  hanbok: 'TRADITIONAL_HANBOK',
   game: 'ZOOTOPIA',
   watercolor: 'LIGHT_ART',
   studio: 'STUDIO',
@@ -67,15 +68,25 @@ export async function createAvatar(data: {
     const res = await apiClient.post<CreateAvatarRes>('/avatars', formData)
     return res.data
   } catch (err) {
-    throw new Error(extractErrorMessage(err))
+    throw new Error(extractErrorMessage(err), { cause: err })
   }
 }
 
 export async function getAvatar(id: number): Promise<GetAvatarRes> {
   try {
-    const res = await apiClient.get<GetAvatarRes>(`/avatars/${id}`)
-    return res.data
+    const res = await apiClient.get<Record<string, unknown>>(`/avatars/${id}`)
+    const raw = res.data
+    // Normalize snake_case ↔ camelCase so the poll works regardless of server convention
+    return {
+      id: raw['id'] as number,
+      nickname: (raw['nickname'] as string) ?? '',
+      imageUrl: (raw['imageUrl'] ?? raw['image_url'] ?? null) as string | null,
+      passUrl: (raw['passUrl'] ?? raw['pass_url'] ?? null) as string | null,
+      generationStatus: (raw['generationStatus'] ??
+        raw['generation_status'] ??
+        null) as GetAvatarRes['generationStatus'],
+    }
   } catch (err) {
-    throw new Error(extractErrorMessage(err))
+    throw new Error(extractErrorMessage(err), { cause: err })
   }
 }
