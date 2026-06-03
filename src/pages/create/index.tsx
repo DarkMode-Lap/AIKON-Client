@@ -5,7 +5,6 @@ import { Sparkles, ArrowLeft, ArrowRight, Camera, RefreshCw, Check, X } from 'lu
 import { STYLE_OPTIONS, AGE_GROUPS, GENDER_OPTIONS } from '@/shared/lib/constants'
 import { cn, randomNickname } from '@/shared/lib/utils'
 import type { CreateFormData, AvatarStyle, AgeGroup, Gender } from '@/shared/types'
-import { createAvatar } from '@/shared/api/avatar'
 import { compressImage } from '@/shared/lib/compressImage'
 import toast from 'react-hot-toast'
 
@@ -31,7 +30,6 @@ export default function CreatePage() {
     photoFile: null,
     photoPreview: null,
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -86,25 +84,17 @@ export default function CreatePage() {
     toast.success('사진이 선택됐어요! 🖼️')
   }
 
-  async function handleGenerate() {
+  function handleGenerate() {
     if (!form.photoFile || !form.style || !form.gender || !form.ageGroup) return
-    setIsSubmitting(true)
-    try {
-      const res = await createAvatar({
+    navigate('/loading', {
+      state: {
         image: form.photoFile,
         nickname: form.nickname,
         gender: form.gender,
         style: form.style,
         ageRange: form.ageGroup,
-      })
-      navigate(
-        `/loading?avatarId=${res.id}&nickname=${encodeURIComponent(form.nickname)}&style=${form.style}`,
-      )
-    } catch (err) {
-      const detail = err instanceof Error ? err.message : '알 수 없는 오류'
-      toast.error(`아바타 생성 실패: ${detail}`)
-      setIsSubmitting(false)
-    }
+      },
+    })
   }
 
   return (
@@ -200,25 +190,18 @@ export default function CreatePage() {
       <div className="fade-in-2 relative z-10 w-full max-w-md mt-4">
         <button
           onClick={goNext}
-          disabled={!canProceed() || isSubmitting}
+          disabled={!canProceed()}
           className={cn(
             'btn-magic w-full py-4 text-white text-base flex items-center justify-center gap-2 transition-opacity',
-            (!canProceed() || isSubmitting) && 'opacity-40 cursor-not-allowed',
+            !canProceed() && 'opacity-40 cursor-not-allowed',
           )}
         >
           {step === TOTAL_STEPS ? (
-            isSubmitting ? (
-              <>
-                <RefreshCw className="w-5 h-5 animate-spin" />
-                생성 중...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-5 h-5" />
-                AI 캐릭터 만들기!
-                <Sparkles className="w-5 h-5" />
-              </>
-            )
+            <>
+              <Sparkles className="w-5 h-5" />
+              AI 캐릭터 만들기!
+              <Sparkles className="w-5 h-5" />
+            </>
           ) : (
             <>
               다음 단계

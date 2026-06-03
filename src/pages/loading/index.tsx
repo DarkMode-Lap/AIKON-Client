@@ -1,11 +1,26 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
+import toast from 'react-hot-toast'
 import { LOADING_MESSAGES } from '@/shared/lib/constants'
-import { getAvatar } from '@/shared/api/avatar'
+import { createAvatar, getAvatar } from '@/shared/api/avatar'
+import type { CreateAvatarRes } from '@/shared/api/avatar'
+import type { AvatarStyle, AgeGroup, Gender } from '@/shared/types'
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const
 const MAGIC_EMOJIS = ['🎨', '✨', '🌟', '💫', '🦋', '🌈', '⭐', '🎭']
+
+interface LocationState {
+  image: File
+  nickname: string
+  gender: Gender
+  style: AvatarStyle
+  ageRange: AgeGroup
+}
+
+// Module-level: shared across Strict Mode double-invocations so only one POST fires.
+// Cleared after the Promise settles so re-entry from a fresh navigation starts clean.
+let pendingCreate: Promise<CreateAvatarRes> | null = null
 
 function ProgressRing({ progress }: { progress: number }) {
   const r = 64
@@ -40,33 +55,38 @@ function ProgressRing({ progress }: { progress: number }) {
 
 export default function LoadingPage() {
   const navigate = useNavigate()
-  const [params] = useSearchParams()
-  const avatarId = params.get('avatarId') ?? ''
-  const nickname = params.get('nickname') ?? '친구'
-  const style = params.get('style') ?? 'ghibli'
+  const location = useLocation()
+  const state = location.state as LocationState | null
+
+  const nickname = state?.nickname ?? '친구'
+  const style = state?.style ?? 'ghibli'
 
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [emojiIdx, setEmojiIdx] = useState(0)
 
   useEffect(() => {
-    if (!avatarId) {
+    if (!state?.image) {
       navigate('/')
       return
     }
 
-    // Visual progress — caps at 97% until API confirms completion
-    const totalMs = 120_000
-    const tick = 200
+    // Exponential approach: pct = 99 * (1 - e^(-elapsed / TAU))
+    // TAU = 0.8s: reaches ~99% in ~5 seconds, then holds until API confirms completion.
+    // 1s→71%, 2s→92%, 3s→97%, 5s→99%
+    const TAU = 800          // time constant (ms) — smaller = faster early progress
+    const tick = 100         // 100ms tick for smooth sub-percent animation
+    const MAX_WAIT_MS = 300_000 // 5 minutes — give up and show error after this
     let elapsed = 0
     let done = false
+    let pollTimeout: ReturnType<typeof setTimeout>
 
     const progressTimer = setInterval(() => {
       if (done) return
       elapsed += tick
-      const pct = Math.min((elapsed / totalMs) * 100, 97)
+      const pct = Math.min(99 * (1 - Math.exp(-elapsed / TAU)), 99)
       setProgress(pct)
-      const msgIdx = Math.floor((pct / 100) * (LOADING_MESSAGES.length - 1))
+      const msgIdx = Math.floor((pct / 99) * (LOADING_MESSAGES.length - 1))
       setMsgIndex(Math.min(msgIdx, LOADING_MESSAGES.length - 1))
     }, tick)
 
@@ -74,40 +94,86 @@ export default function LoadingPage() {
       setEmojiIdx((i) => (i + 1) % MAGIC_EMOJIS.length)
     }, 2800)
 
-    let pollTimeout: ReturnType<typeof setTimeout>
+    const timeoutTimer = setTimeout(() => {
+      if (done) return
+      done = true
+      clearInterval(progressTimer)
+      clearInterval(emojiTimer)
+      clearTimeout(pollTimeout)
+      toast.error('AI 생성에 시간이 너무 걸리고 있어요. 다시 시도해주세요 😢')
+      navigate('/create')
+    }, MAX_WAIT_MS)
 
-    async function poll() {
+    function complete(avatarId: number) {
+      done = true
+      clearInterval(progressTimer)
+      clearInterval(emojiTimer)
+      clearTimeout(pollTimeout)
+      clearTimeout(timeoutTimer)
+      setProgress(100)
+      setMsgIndex(LOADING_MESSAGES.length - 1)
+      setTimeout(() => {
+        navigate(`/result/${avatarId}?nickname=${encodeURIComponent(nickname)}&style=${style}`)
+      }, 600)
+    }
+
+    async function poll(avatarId: number) {
       if (done) return
       try {
-        const data = await getAvatar(Number(avatarId))
-        if (data.imageUrl) {
+        const data = await getAvatar(avatarId)
+        if (data.generationStatus === 'FAILED') {
           done = true
           clearInterval(progressTimer)
           clearInterval(emojiTimer)
-          setProgress(100)
-          setMsgIndex(LOADING_MESSAGES.length - 1)
-          setTimeout(() => {
-            navigate(
-              `/result/${avatarId}?nickname=${encodeURIComponent(nickname)}&style=${style}`,
-            )
-          }, 600)
+          clearTimeout(timeoutTimer)
+          toast.error('아바타 생성에 실패했어요. 다시 시도해주세요 😢')
+          navigate('/create')
+          return
+        }
+        if (data.imageUrl) {
+          complete(avatarId)
           return
         }
       } catch {
         // ignore transient errors, keep polling
       }
-      if (!done) pollTimeout = setTimeout(poll, 3000)
+      if (!done) pollTimeout = setTimeout(() => void poll(avatarId), 3000)
     }
 
-    poll()
+    // Reuse an in-flight promise if one exists (guards against Strict Mode double-invoke).
+    // Each mount registers its own .then/.catch so only the live mount's closure is used.
+    if (!pendingCreate) {
+      pendingCreate = createAvatar({
+        image: state.image,
+        nickname: state.nickname,
+        gender: state.gender,
+        style: state.style,
+        ageRange: state.ageRange,
+      })
+    }
+
+    pendingCreate
+      .then((res) => {
+        pendingCreate = null
+        if (!done) void poll(res.id)
+      })
+      .catch((err) => {
+        pendingCreate = null
+        if (done) return
+        const detail = err instanceof Error ? err.message : '알 수 없는 오류'
+        toast.error(`아바타 생성 실패: ${detail}`)
+        navigate('/create')
+      })
 
     return () => {
       done = true
       clearInterval(progressTimer)
       clearInterval(emojiTimer)
       clearTimeout(pollTimeout)
+      clearTimeout(timeoutTimer)
     }
-  }, [avatarId, navigate, nickname, style])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once on mount; state is set by navigate and does not change
+  }, [])
 
   const currentMsg = LOADING_MESSAGES[msgIndex]
 
