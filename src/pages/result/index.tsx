@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { Download, Share2, RefreshCw } from 'lucide-react'
 import { STYLE_OPTIONS, AIKON_RANGE } from '@/shared/lib/constants'
+import { getAvatar } from '@/shared/api/avatar'
+import type { GetAvatarRes } from '@/shared/api/avatar'
 import toast from 'react-hot-toast'
 
 function AvatarPlaceholder({ style, nickname }: { style: string; nickname: string }) {
@@ -29,10 +32,21 @@ export default function ResultPage() {
   const [params] = useSearchParams()
   const nickname = params.get('nickname') ?? '친구'
   const style = params.get('style') ?? 'ghibli'
-  const imageUrl = params.get('imageUrl') ?? ''
+
+  const [avatarData, setAvatarData] = useState<GetAvatarRes | null>(null)
+
+  useEffect(() => {
+    if (!id) return
+    getAvatar(Number(id))
+      .then(setAvatarData)
+      .catch(() => null)
+  }, [id])
+
+  const imageUrl = avatarData?.imageUrl ?? ''
+
   function handleDownload() {
     if (!imageUrl) {
-      toast('이미지 저장 기능은 백엔드 연결 후 활성화돼요 📁')
+      toast('이미지를 불러오는 중이에요. 잠시 후 다시 시도해주세요. 📁')
       return
     }
     fetch(imageUrl)
@@ -115,7 +129,7 @@ export default function ResultPage() {
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
             <QRCodeSVG
-              value={`${window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}${imageUrl ? `&imageUrl=${encodeURIComponent(imageUrl)}` : ''}`}
+              value={`${window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}`}
               size={140}
               bgColor="#ffffff"
               fgColor="#1e0f3f"
