@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LOADING_MESSAGES } from '@/shared/lib/constants'
+import { getAvatar } from '@/shared/api/avatar'
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const
 const MAGIC_EMOJIS = ['🎨', '✨', '🌟', '💫', '🦋', '🌈', '⭐', '🎭']
@@ -40,20 +41,28 @@ function ProgressRing({ progress }: { progress: number }) {
 export default function LoadingPage() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
-  const jobId = params.get('jobId') ?? ''
+  const avatarId = params.get('avatarId') ?? ''
   const nickname = params.get('nickname') ?? '친구'
   const style = params.get('style') ?? 'ghibli'
 
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [emojiIdx, setEmojiIdx] = useState(0)
+
   useEffect(() => {
-    const totalMs = 35_000
+    if (!avatarId) {
+      navigate('/')
+      return
+    }
+
+    // Visual progress — caps at 97% until API confirms completion
+    const totalMs = 120_000
     const tick = 200
     let elapsed = 0
-    let timerId: ReturnType<typeof setInterval> | null = null
+    let done = false
 
-    timerId = setInterval(() => {
+    const progressTimer = setInterval(() => {
+      if (done) return
       elapsed += tick
       const pct = Math.min((elapsed / totalMs) * 100, 97)
       setProgress(pct)
@@ -65,24 +74,40 @@ export default function LoadingPage() {
       setEmojiIdx((i) => (i + 1) % MAGIC_EMOJIS.length)
     }, 2800)
 
-    let nextTimeoutId: ReturnType<typeof setTimeout> | null = null
+    let pollTimeout: ReturnType<typeof setTimeout>
 
-    const demoTimeout = setTimeout(() => {
-      if (timerId) clearInterval(timerId)
-      setProgress(100)
-      setMsgIndex(LOADING_MESSAGES.length - 1)
-      nextTimeoutId = setTimeout(() => {
-        navigate(`/result/demo-${jobId}?nickname=${encodeURIComponent(nickname)}&style=${style}`)
-      }, 600)
-    }, 35_000)
+    async function poll() {
+      if (done) return
+      try {
+        const data = await getAvatar(Number(avatarId))
+        if (data.imageUrl) {
+          done = true
+          clearInterval(progressTimer)
+          clearInterval(emojiTimer)
+          setProgress(100)
+          setMsgIndex(LOADING_MESSAGES.length - 1)
+          setTimeout(() => {
+            navigate(
+              `/result/${avatarId}?nickname=${encodeURIComponent(nickname)}&style=${style}`,
+            )
+          }, 600)
+          return
+        }
+      } catch {
+        // ignore transient errors, keep polling
+      }
+      if (!done) pollTimeout = setTimeout(poll, 3000)
+    }
+
+    poll()
 
     return () => {
-      if (timerId) clearInterval(timerId)
+      done = true
+      clearInterval(progressTimer)
       clearInterval(emojiTimer)
-      clearTimeout(demoTimeout)
-      if (nextTimeoutId) clearTimeout(nextTimeoutId)
+      clearTimeout(pollTimeout)
     }
-  }, [navigate, jobId, nickname, style])
+  }, [avatarId, navigate, nickname, style])
 
   const currentMsg = LOADING_MESSAGES[msgIndex]
 
