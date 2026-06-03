@@ -6,6 +6,7 @@ import { STYLE_OPTIONS, AGE_GROUPS, GENDER_OPTIONS } from '@/shared/lib/constant
 import { cn, randomNickname } from '@/shared/lib/utils'
 import type { CreateFormData, AvatarStyle, AgeGroup, Gender } from '@/shared/types'
 import { createAvatar } from '@/shared/api/avatar'
+import { compressImage } from '@/shared/lib/compressImage'
 import toast from 'react-hot-toast'
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const
@@ -66,15 +67,22 @@ export default function CreatePage() {
     setStep((s) => s - 1)
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
       toast.error('이미지 파일만 업로드할 수 있어요! 😢')
       return
     }
-    const url = URL.createObjectURL(file)
-    setForm((f) => ({ ...f, photoFile: file, photoPreview: url }))
+    // 즉시 미리보기 표시
+    const previewUrl = URL.createObjectURL(file)
+    setForm((f) => ({ ...f, photoFile: file, photoPreview: previewUrl }))
+    try {
+      const compressed = await compressImage(file)
+      setForm((f) => ({ ...f, photoFile: compressed }))
+    } catch {
+      // 압축 실패 시 원본 그대로 사용
+    }
     toast.success('사진이 선택됐어요! 🖼️')
   }
 
