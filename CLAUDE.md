@@ -12,6 +12,7 @@ React + TypeScript + Vite frontend for the AIKON project, maintained by DarkMode
 | Routing | React Router 7 |
 | Styling | Tailwind CSS 4 |
 | Animation | Framer Motion 12 |
+| HTTP Client | Axios |
 | Linting | ESLint 10 + typescript-eslint |
 | Formatting | Prettier 3 |
 
