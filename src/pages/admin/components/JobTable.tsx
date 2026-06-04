@@ -4,6 +4,7 @@ import type { GenerationStatus } from '@/shared/api'
 
 export type AdminJob = {
   id: number
+  dbId?: number
   aikon: string
   nickname: string
   style: string
@@ -142,13 +143,17 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
                   <td className="px-4 align-middle">{job.status}</td>
                   <td className="px-4 align-middle">{job.createdAt ?? '-'}</td>
                   <td className="px-4 align-middle">
-                    <button
-                      type="button"
-                      onClick={() => onDelete(job.id)}
-                      className="text-sm font-black text-rose-500 transition-colors hover:text-rose-600"
-                    >
-                      삭제
-                    </button>
+                    {job.dbId !== undefined ? (
+                      <button
+                        type="button"
+                        onClick={() => onDelete(job.dbId!)}
+                        className="text-sm font-black text-rose-500 transition-colors hover:text-rose-600"
+                      >
+                        삭제
+                      </button>
+                    ) : (
+                      <span className="text-xs text-slate-300">-</span>
+                    )}
                   </td>
                 </tr>
               ))}

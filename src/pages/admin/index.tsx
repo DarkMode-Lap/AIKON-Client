@@ -46,10 +46,9 @@ function formatCreatedAt(raw?: string): string {
 function toAdminJob(avatar: AvatarListItem, index: number): AdminJob {
   const gender = avatar.gender ? (GENDER_LABELS[avatar.gender] ?? avatar.gender) : '-'
   const age = avatar.ageRange ? (AGE_LABELS[avatar.ageRange] ?? avatar.ageRange) : '-'
-  const realId = avatar.id ?? index
-
   return {
-    id: realId,
+    id: index,
+    dbId: avatar.id,
     aikon: avatar.passUrl ?? (avatar.id ? `Akikon${avatar.id}` : `#${index + 1}`),
     nickname: avatar.nickname,
     style: avatar.style ? (STYLE_LABELS[avatar.style] ?? avatar.style) : '-',
