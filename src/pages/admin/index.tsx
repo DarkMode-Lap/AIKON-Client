@@ -118,7 +118,7 @@ export default function AdminPage() {
     if (deleteJobId === null) return
     try {
       await deleteAvatar(deleteJobId)
-      setJobs((prev) => prev.filter((j) => j.id !== deleteJobId))
+      setJobs((prev) => prev.filter((j) => j.dbId !== deleteJobId))
       toast.success('삭제되었습니다')
     } catch (e) {
       const msg = e instanceof Error ? e.message : '알 수 없는 오류'
