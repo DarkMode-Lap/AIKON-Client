@@ -131,7 +131,12 @@ export default function AdminPage() {
       <section className="relative z-10 mx-auto flex min-h-dvh w-full max-w-210 flex-col px-5 py-14 sm:py-14.5">
         <AdminHeader systemOk={systemOk} />
         <SummarySection totalJobs={jobs.length} waitingCount={waitingCount} />
-        <JobTable jobs={jobs} isRefreshing={isRefreshing} onRefresh={handleRefresh} onDelete={setDeleteJobId} />
+        <JobTable
+          jobs={jobs}
+          isRefreshing={isRefreshing}
+          onRefresh={handleRefresh}
+          onDelete={setDeleteJobId}
+        />
         <DangerZone onReset={() => setIsResetModalOpen(true)} />
       </section>
 
@@ -188,18 +193,14 @@ function AdminHeader({ systemOk }: { systemOk: boolean | null }) {
   )
 }
 
-function SummarySection({
-  totalJobs,
-  waitingCount,
-}: {
-  totalJobs: number
-  waitingCount: number
-}) {
+function SummarySection({ totalJobs, waitingCount }: { totalJobs: number; waitingCount: number }) {
   return (
     <div className="grid gap-6 sm:grid-cols-2">
       <SummaryCard title="전체 아바타">
         <div className="mt-5.5 flex items-end gap-1.5">
-          <strong className="text-[32px] leading-none font-black text-slate-950">{totalJobs}</strong>
+          <strong className="text-[32px] leading-none font-black text-slate-950">
+            {totalJobs}
+          </strong>
           <span className="pb-1 text-xl font-black text-slate-500">건</span>
         </div>
       </SummaryCard>

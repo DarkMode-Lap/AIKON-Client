@@ -46,8 +46,7 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const filtered =
-    filter === 'ALL' ? jobs : jobs.filter((j) => j.generationStatus === filter)
+  const filtered = filter === 'ALL' ? jobs : jobs.filter((j) => j.generationStatus === filter)
 
   const currentLabel = FILTER_OPTIONS.find((o) => o.value === filter)?.label ?? '전체'
 
