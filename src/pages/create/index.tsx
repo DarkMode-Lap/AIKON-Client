@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, ArrowLeft, ArrowRight, Camera, RefreshCw, Check, X } from 'lucide-react'
 import { STYLE_OPTIONS, AGE_GROUPS, GENDER_OPTIONS } from '@/shared/lib/constants'
 import { cn, randomNickname } from '@/shared/lib/utils'
-import type { CreateFormData, AvatarStyle, AgeGroup, Gender } from '@/shared/types'
+import type { CreateFormData, AvatarStyle, AgeGroup, Gender } from '@/entities/avatar'
 import { compressImage } from '@/shared/lib/compressImage'
 import toast from 'react-hot-toast'
 
