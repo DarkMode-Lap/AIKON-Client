@@ -68,6 +68,7 @@ export default function AdminPage() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const [deleteJobId, setDeleteJobId] = useState<number | null>(null)
   const unsubRef = useRef<(() => void) | null>(null)
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     checkHealth()
@@ -78,7 +79,10 @@ export default function AdminPage() {
       setJobs(avatars.map((avatar, index) => toAdminJob(avatar, index)))
     })
 
-    return () => unsubRef.current?.()
+    return () => {
+      unsubRef.current?.()
+      if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current)
+    }
   }, [])
 
   function handleRefresh() {
@@ -86,7 +90,8 @@ export default function AdminPage() {
     setIsRefreshing(true)
     unsubRef.current?.()
 
-    const timeoutId = setTimeout(() => {
+    if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current)
+    refreshTimeoutRef.current = setTimeout(() => {
       active = false
       setIsRefreshing(false)
       toast.error('새로고침에 실패했습니다')
@@ -94,7 +99,7 @@ export default function AdminPage() {
 
     unsubRef.current = subscribeToAvatarChanges((avatars) => {
       if (active) {
-        clearTimeout(timeoutId)
+        if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current)
         setIsRefreshing(false)
         toast.success('목록을 새로고침했습니다')
         active = false
@@ -111,6 +116,8 @@ export default function AdminPage() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : '알 수 없는 오류'
       toast.error(`초기화 실패: ${msg}`)
+    } finally {
+      setIsResetModalOpen(false)
     }
   }
 
@@ -123,6 +130,8 @@ export default function AdminPage() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : '알 수 없는 오류'
       toast.error(`삭제 실패: ${msg}`)
+    } finally {
+      setDeleteJobId(null)
     }
   }
 
