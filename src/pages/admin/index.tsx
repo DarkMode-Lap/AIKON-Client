@@ -83,19 +83,24 @@ export default function AdminPage() {
   }, [])
 
   function handleRefresh() {
+    let active = true
     setIsRefreshing(true)
     unsubRef.current?.()
 
     const timeoutId = setTimeout(() => {
+      active = false
       setIsRefreshing(false)
       toast.error('새로고침에 실패했습니다')
     }, 5000)
 
     unsubRef.current = subscribeToAvatarChanges((avatars) => {
-      clearTimeout(timeoutId)
+      if (active) {
+        clearTimeout(timeoutId)
+        setIsRefreshing(false)
+        toast.success('목록을 새로고침했습니다')
+        active = false
+      }
       setJobs(avatars.map((avatar, index) => toAdminJob(avatar, index)))
-      setIsRefreshing(false)
-      toast.success('목록을 새로고침했습니다')
     })
   }
 
