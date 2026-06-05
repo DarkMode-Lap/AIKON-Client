@@ -3,10 +3,10 @@ import type { AvatarListItem } from '@/shared/api'
 
 function cardParams(i: number) {
   const duration = 4 + (i % 5)
-  const delay    = (i * 0.55) % 4
-  const rx       = [0,  4 + (i % 3) * 2, 0, -(4 + (i % 3) * 2), 0]
-  const ry       = [0, -(6 + (i % 4) * 2), 0,  6 + (i % 4) * 2, 0]
-  const y        = [0, -(5 + (i % 3) * 2), 0,  5 + (i % 3) * 2, 0]
+  const delay = (i * 0.55) % 4
+  const rx = [0, 4 + (i % 3) * 2, 0, -(4 + (i % 3) * 2), 0]
+  const ry = [0, -(6 + (i % 4) * 2), 0, 6 + (i % 4) * 2, 0]
+  const y = [0, -(5 + (i % 3) * 2), 0, 5 + (i % 3) * 2, 0]
   return { duration, delay, rx, ry, y }
 }
 
@@ -31,10 +31,10 @@ export function AvatarCard({ avatar, index }: AvatarCardProps) {
       }}
       transition={{
         opacity: { duration: 0.4, delay: index * 0.05 },
-        scale:   { duration: 0.4, delay: index * 0.05 },
+        scale: { duration: 0.4, delay: index * 0.05 },
         rotateX: { duration, delay, repeat: Infinity, ease: 'easeInOut' },
         rotateY: { duration: duration * 1.1, delay, repeat: Infinity, ease: 'easeInOut' },
-        y:       { duration: duration * 0.9, delay, repeat: Infinity, ease: 'easeInOut' },
+        y: { duration: duration * 0.9, delay, repeat: Infinity, ease: 'easeInOut' },
       }}
       className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center gap-3 shadow-md"
     >

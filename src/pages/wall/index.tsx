@@ -5,12 +5,36 @@ import { subscribeToAvatarChanges, type AvatarListItem } from '@/shared/api'
 import { AvatarGrid } from '@/widgets/avatar-wall'
 
 const EXAMPLE_AVATARS: AvatarListItem[] = [
-  { nickname: '양천나이키',  imageUrl: 'https://picsum.photos/seed/aikon1/400/400', generationStatus: 'COMPLETED' },
-  { nickname: 'Sindy gall', imageUrl: 'https://picsum.photos/seed/aikon2/400/400', generationStatus: 'COMPLETED' },
-  { nickname: '포근한오렌지', imageUrl: 'https://picsum.photos/seed/aikon3/400/400', generationStatus: 'COMPLETED' },
-  { nickname: '영리한호랑이', imageUrl: 'https://picsum.photos/seed/aikon4/400/400', generationStatus: 'COMPLETED' },
-  { nickname: '침착한거북이', imageUrl: 'https://picsum.photos/seed/aikon5/400/400', generationStatus: 'COMPLETED' },
-  { nickname: '침착한다람쥐', imageUrl: 'https://picsum.photos/seed/aikon6/400/400', generationStatus: 'COMPLETED' },
+  {
+    nickname: '양천나이키',
+    imageUrl: 'https://picsum.photos/seed/aikon1/400/400',
+    generationStatus: 'COMPLETED',
+  },
+  {
+    nickname: 'Sindy gall',
+    imageUrl: 'https://picsum.photos/seed/aikon2/400/400',
+    generationStatus: 'COMPLETED',
+  },
+  {
+    nickname: '포근한오렌지',
+    imageUrl: 'https://picsum.photos/seed/aikon3/400/400',
+    generationStatus: 'COMPLETED',
+  },
+  {
+    nickname: '영리한호랑이',
+    imageUrl: 'https://picsum.photos/seed/aikon4/400/400',
+    generationStatus: 'COMPLETED',
+  },
+  {
+    nickname: '침착한거북이',
+    imageUrl: 'https://picsum.photos/seed/aikon5/400/400',
+    generationStatus: 'COMPLETED',
+  },
+  {
+    nickname: '침착한다람쥐',
+    imageUrl: 'https://picsum.photos/seed/aikon6/400/400',
+    generationStatus: 'COMPLETED',
+  },
 ]
 
 const PARTICIPATE_URL = `${window.location.origin}/create`
