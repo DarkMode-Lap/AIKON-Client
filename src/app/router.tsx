@@ -6,6 +6,7 @@ const CreatePage = lazy(() => import('@/pages/create'))
 const LoadingPage = lazy(() => import('@/pages/loading'))
 const ResultPage = lazy(() => import('@/pages/result'))
 const AdminPage = lazy(() => import('@/pages/admin'))
+const WallPage = lazy(() => import('@/pages/wall'))
 
 function Fallback() {
   return (
@@ -30,4 +31,5 @@ export const router = createBrowserRouter([
   { path: '/loading', element: wrap(LoadingPage) },
   { path: '/result/:id', element: wrap(ResultPage) },
   { path: '/admin', element: wrap(AdminPage) },
+  { path: '/wall', element: wrap(WallPage) },
 ])
