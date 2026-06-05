@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { subscribeToAvatarChanges, type AvatarListItem } from '@/shared/api'
 
@@ -12,6 +13,16 @@ const EXAMPLE_AVATARS: AvatarListItem[] = [
 ]
 
 const PARTICIPATE_URL = `${window.location.origin}/create`
+
+// deterministic per-card animation params based on index
+function cardParams(i: number) {
+  const duration = 4 + (i % 5)                        // 4 ~ 8s
+  const delay    = (i * 0.55) % 4                     // 0 ~ 3.9s offset
+  const rx       = [0,  4 + (i % 3) * 2, 0, -(4 + (i % 3) * 2), 0]  // rotateX
+  const ry       = [0, -(6 + (i % 4) * 2), 0,  6 + (i % 4) * 2, 0]  // rotateY
+  const y        = [0, -(5 + (i % 3) * 2), 0,  5 + (i % 3) * 2, 0]  // float Y
+  return { duration, delay, rx, ry, y }
+}
 
 export default function WallPage() {
   const [avatars, setAvatars] = useState<AvatarListItem[]>([])
@@ -27,9 +38,17 @@ export default function WallPage() {
 
   return (
     <div className="min-h-dvh bg-white flex flex-col relative overflow-hidden">
-      {/* Background blobs */}
-      <div className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-violet-200 blur-3xl opacity-40" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-pink-200 blur-3xl opacity-30" />
+      {/* Animated background blobs */}
+      <motion.div
+        className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-violet-200 blur-3xl opacity-40"
+        animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-pink-200 blur-3xl opacity-30"
+        animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       {/* Header */}
       <header className="relative z-10 flex-none px-8 py-6 border-b border-gray-100">
@@ -49,26 +68,32 @@ export default function WallPage() {
       {/* Body */}
       <div className="relative z-10 flex-1 flex overflow-hidden">
         {/* Avatar grid */}
-        <main className="flex-1 overflow-y-auto px-6 py-6">
-          <div className="grid grid-cols-3 gap-5">
+        <main className="flex-1 overflow-y-auto px-6 py-6" style={{ perspective: '1000px' }}>
+          <div className="grid grid-cols-3 gap-6">
             {allAvatars.map((avatar, i) => (
-              <AvatarCard key={avatar.id ?? `example-${i}`} avatar={avatar} />
+              <AvatarCard key={avatar.id ?? `example-${i}`} avatar={avatar} index={i} />
             ))}
           </div>
         </main>
 
         {/* Right sidebar */}
         <aside className="flex-none w-72 border-l border-gray-100 px-6 py-8 flex flex-col gap-8">
-          {/* Stats */}
           <div>
             <p className="text-xs font-black tracking-widest text-violet-400 uppercase mb-3">
               Live Statistics
             </p>
-            <p className="text-7xl font-black text-violet-500 leading-none">{allAvatars.length}</p>
+            <motion.p
+              key={allAvatars.length}
+              className="text-7xl font-black text-violet-500 leading-none"
+              initial={{ scale: 1.3, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              {allAvatars.length}
+            </motion.p>
             <p className="mt-2 text-sm font-semibold text-gray-400">Total AI Avatars</p>
           </div>
 
-          {/* QR */}
           <div>
             <p className="text-xs font-black tracking-widest text-violet-400 uppercase mb-4">
               How to Participate
@@ -92,19 +117,41 @@ export default function WallPage() {
 
 interface AvatarCardProps {
   avatar: AvatarListItem
+  index: number
 }
 
-function AvatarCard({ avatar }: AvatarCardProps) {
+function AvatarCard({ avatar, index }: AvatarCardProps) {
+  const { duration, delay, rx, ry, y } = cardParams(index)
+
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center gap-3 shadow-sm">
-      <div className="w-full aspect-square rounded-xl overflow-hidden">
-        <img
-          src={avatar.imageUrl}
-          alt={avatar.nickname}
-          className="w-full h-full object-cover"
-        />
+    <motion.div
+      style={{ transformStyle: 'preserve-3d' }}
+      initial={{ opacity: 0, scale: 0.88 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        rotateX: rx,
+        rotateY: ry,
+        y,
+      }}
+      transition={{
+        opacity: { duration: 0.4, delay: index * 0.05 },
+        scale:   { duration: 0.4, delay: index * 0.05 },
+        rotateX: { duration, delay, repeat: Infinity, ease: 'easeInOut' },
+        rotateY: { duration: duration * 1.1, delay, repeat: Infinity, ease: 'easeInOut' },
+        y:       { duration: duration * 0.9, delay, repeat: Infinity, ease: 'easeInOut' },
+      }}
+      className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center gap-3 shadow-md"
+    >
+      <div
+        className="w-full aspect-square rounded-xl overflow-hidden shadow-lg"
+        style={{ transform: 'translateZ(20px)' }}
+      >
+        <img src={avatar.imageUrl} alt={avatar.nickname} className="w-full h-full object-cover" />
       </div>
-      <p className="text-sm font-black text-gray-800">{avatar.nickname}</p>
-    </div>
+      <p className="text-sm font-black text-gray-800" style={{ transform: 'translateZ(10px)' }}>
+        {avatar.nickname}
+      </p>
+    </motion.div>
   )
 }
