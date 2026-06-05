@@ -3,7 +3,7 @@ type ConfirmModalProps = {
   description: string
   primaryLabel: string
   onClose: () => void
-  onConfirm?: () => void
+  onConfirm?: () => Promise<void>
 }
 
 export default function ConfirmModal({
@@ -13,8 +13,8 @@ export default function ConfirmModal({
   onClose,
   onConfirm,
 }: ConfirmModalProps) {
-  function handleConfirm() {
-    onConfirm?.()
+  async function handleConfirm() {
+    await onConfirm?.()
     onClose()
   }
 

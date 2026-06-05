@@ -3,7 +3,13 @@ import { apiClient, BASE_URL } from './client'
 export type GenerationStatus = 'WAITING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'RETRYING'
 export type AvatarGender = 'MALE' | 'FEMALE'
 export type AvatarAgeRange = 'AGE_0_7' | 'AGE_8_13' | 'AGE_14_19' | 'AGE_20_PLUS'
-export type AvatarStyleCode = 'STUDIO' | 'GHIBLI' | 'DISNEY' | 'HANBOK' | 'GAME' | 'WATERCOLOR'
+export type AvatarStyleCode =
+  | 'STUDIO'
+  | 'ZOOTOPIA'
+  | 'TRADITIONAL_HANBOK'
+  | 'DISNEY_PIXAR'
+  | 'GHIBLI'
+  | 'LIGHT_ART'
 
 export type AvatarResponse = {
   id: number
