@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { subscribeToAvatarChanges, type AvatarListItem } from '@/shared/api'
+import { AvatarGrid } from '@/widgets/avatar-wall'
 
 const EXAMPLE_AVATARS: AvatarListItem[] = [
-  { nickname: '양천나이키', imageUrl: 'https://picsum.photos/seed/aikon1/400/400', generationStatus: 'COMPLETED' },
+  { nickname: '양천나이키',  imageUrl: 'https://picsum.photos/seed/aikon1/400/400', generationStatus: 'COMPLETED' },
   { nickname: 'Sindy gall', imageUrl: 'https://picsum.photos/seed/aikon2/400/400', generationStatus: 'COMPLETED' },
   { nickname: '포근한오렌지', imageUrl: 'https://picsum.photos/seed/aikon3/400/400', generationStatus: 'COMPLETED' },
   { nickname: '영리한호랑이', imageUrl: 'https://picsum.photos/seed/aikon4/400/400', generationStatus: 'COMPLETED' },
@@ -13,16 +14,6 @@ const EXAMPLE_AVATARS: AvatarListItem[] = [
 ]
 
 const PARTICIPATE_URL = `${window.location.origin}/create`
-
-// deterministic per-card animation params based on index
-function cardParams(i: number) {
-  const duration = 4 + (i % 5)                        // 4 ~ 8s
-  const delay    = (i * 0.55) % 4                     // 0 ~ 3.9s offset
-  const rx       = [0,  4 + (i % 3) * 2, 0, -(4 + (i % 3) * 2), 0]  // rotateX
-  const ry       = [0, -(6 + (i % 4) * 2), 0,  6 + (i % 4) * 2, 0]  // rotateY
-  const y        = [0, -(5 + (i % 3) * 2), 0,  5 + (i % 3) * 2, 0]  // float Y
-  return { duration, delay, rx, ry, y }
-}
 
 export default function WallPage() {
   const [avatars, setAvatars] = useState<AvatarListItem[]>([])
@@ -38,7 +29,6 @@ export default function WallPage() {
 
   return (
     <div className="min-h-dvh bg-white flex flex-col relative overflow-hidden">
-      {/* Animated background blobs */}
       <motion.div
         className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-violet-200 blur-3xl opacity-40"
         animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
@@ -50,7 +40,6 @@ export default function WallPage() {
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Header */}
       <header className="relative z-10 flex-none px-8 py-6 border-b border-gray-100">
         <div className="flex items-stretch gap-4">
           <div className="w-1 rounded-full bg-violet-500 flex-none" />
@@ -65,18 +54,11 @@ export default function WallPage() {
         </div>
       </header>
 
-      {/* Body */}
       <div className="relative z-10 flex-1 flex overflow-hidden">
-        {/* Avatar grid */}
         <main className="flex-1 overflow-y-auto px-6 py-6" style={{ perspective: '1000px' }}>
-          <div className="grid grid-cols-3 gap-6">
-            {allAvatars.map((avatar, i) => (
-              <AvatarCard key={avatar.id ?? `example-${i}`} avatar={avatar} index={i} />
-            ))}
-          </div>
+          <AvatarGrid avatars={allAvatars} />
         </main>
 
-        {/* Right sidebar */}
         <aside className="flex-none w-72 border-l border-gray-100 px-6 py-8 flex flex-col gap-8">
           <div>
             <p className="text-xs font-black tracking-widest text-violet-400 uppercase mb-3">
@@ -112,46 +94,5 @@ export default function WallPage() {
         </aside>
       </div>
     </div>
-  )
-}
-
-interface AvatarCardProps {
-  avatar: AvatarListItem
-  index: number
-}
-
-function AvatarCard({ avatar, index }: AvatarCardProps) {
-  const { duration, delay, rx, ry, y } = cardParams(index)
-
-  return (
-    <motion.div
-      style={{ transformStyle: 'preserve-3d' }}
-      initial={{ opacity: 0, scale: 0.88 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        rotateX: rx,
-        rotateY: ry,
-        y,
-      }}
-      transition={{
-        opacity: { duration: 0.4, delay: index * 0.05 },
-        scale:   { duration: 0.4, delay: index * 0.05 },
-        rotateX: { duration, delay, repeat: Infinity, ease: 'easeInOut' },
-        rotateY: { duration: duration * 1.1, delay, repeat: Infinity, ease: 'easeInOut' },
-        y:       { duration: duration * 0.9, delay, repeat: Infinity, ease: 'easeInOut' },
-      }}
-      className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center gap-3 shadow-md"
-    >
-      <div
-        className="w-full aspect-square rounded-xl overflow-hidden shadow-lg"
-        style={{ transform: 'translateZ(20px)' }}
-      >
-        <img src={avatar.imageUrl} alt={avatar.nickname} className="w-full h-full object-cover" />
-      </div>
-      <p className="text-sm font-black text-gray-800" style={{ transform: 'translateZ(10px)' }}>
-        {avatar.nickname}
-      </p>
-    </motion.div>
   )
 }
