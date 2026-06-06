@@ -1,4 +1,4 @@
-import type { StyleOption } from '@/shared/types'
+import type { StyleOption } from '@/entities/avatar'
 
 export const STYLE_OPTIONS: StyleOption[] = [
   {

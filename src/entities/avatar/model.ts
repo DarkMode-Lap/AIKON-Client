@@ -30,3 +30,12 @@ export interface CreateFormData {
   photoFile: File | null
   photoPreview: string | null
 }
+
+export interface GetAvatarRes {
+  id: number
+  nickname: string
+  imageUrl: string | null
+  passUrl: string | null
+  qrUrl: string | null
+  generationStatus: 'WAITING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'RETRYING' | null
+}

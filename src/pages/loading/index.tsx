@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LOADING_MESSAGES } from '@/shared/lib/constants'
+import { useAvatarCreation } from '@/features/create-avatar'
+import type { AvatarStyle, AgeGroup, Gender } from '@/entities/avatar'
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const
 const MAGIC_EMOJIS = ['🎨', '✨', '🌟', '💫', '🦋', '🌈', '⭐', '🎭']
+
+interface LocationState {
+  image: File
+  nickname: string
+  gender: Gender
+  style: AvatarStyle
+  ageRange: AgeGroup
+}
 
 function ProgressRing({ progress }: { progress: number }) {
   const r = 64
@@ -38,52 +48,26 @@ function ProgressRing({ progress }: { progress: number }) {
 }
 
 export default function LoadingPage() {
-  const navigate = useNavigate()
-  const [params] = useSearchParams()
-  const jobId = params.get('jobId') ?? ''
-  const nickname = params.get('nickname') ?? '친구'
-  const style = params.get('style') ?? 'ghibli'
+  const location = useLocation()
+  const state = location.state as LocationState | null
+  const nickname = state?.nickname ?? '친구'
 
-  const [msgIndex, setMsgIndex] = useState(0)
-  const [progress, setProgress] = useState(0)
+  const { progress } = useAvatarCreation(state)
+
   const [emojiIdx, setEmojiIdx] = useState(0)
+
   useEffect(() => {
-    const totalMs = 35_000
-    const tick = 200
-    let elapsed = 0
-    let timerId: ReturnType<typeof setInterval> | null = null
+    const t = setInterval(() => setEmojiIdx((i) => (i + 1) % MAGIC_EMOJIS.length), 2800)
+    return () => clearInterval(t)
+  }, [])
 
-    timerId = setInterval(() => {
-      elapsed += tick
-      const pct = Math.min((elapsed / totalMs) * 100, 97)
-      setProgress(pct)
-      const msgIdx = Math.floor((pct / 100) * (LOADING_MESSAGES.length - 1))
-      setMsgIndex(Math.min(msgIdx, LOADING_MESSAGES.length - 1))
-    }, tick)
-
-    const emojiTimer = setInterval(() => {
-      setEmojiIdx((i) => (i + 1) % MAGIC_EMOJIS.length)
-    }, 2800)
-
-    let nextTimeoutId: ReturnType<typeof setTimeout> | null = null
-
-    const demoTimeout = setTimeout(() => {
-      if (timerId) clearInterval(timerId)
-      setProgress(100)
-      setMsgIndex(LOADING_MESSAGES.length - 1)
-      nextTimeoutId = setTimeout(() => {
-        navigate(`/result/demo-${jobId}?nickname=${encodeURIComponent(nickname)}&style=${style}`)
-      }, 600)
-    }, 35_000)
-
-    return () => {
-      if (timerId) clearInterval(timerId)
-      clearInterval(emojiTimer)
-      clearTimeout(demoTimeout)
-      if (nextTimeoutId) clearTimeout(nextTimeoutId)
-    }
-  }, [navigate, jobId, nickname, style])
-
+  const msgIndex =
+    progress >= 100
+      ? LOADING_MESSAGES.length - 1
+      : Math.min(
+          Math.floor((progress / 99) * (LOADING_MESSAGES.length - 1)),
+          LOADING_MESSAGES.length - 1,
+        )
   const currentMsg = LOADING_MESSAGES[msgIndex]
 
   return (

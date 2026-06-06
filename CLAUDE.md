@@ -12,6 +12,7 @@ React + TypeScript + Vite frontend for the AIKON project, maintained by DarkMode
 | Routing | React Router 7 |
 | Styling | Tailwind CSS 4 |
 | Animation | Framer Motion 12 |
+| HTTP Client | Axios |
 | Linting | ESLint 10 + typescript-eslint |
 | Formatting | Prettier 3 |
 
@@ -80,15 +81,18 @@ Never do any of the following:
 ## Commit Convention (Conventional Commits)
 
 ```
-<type>(<scope>): <short summary in English, imperative mood>
+<type>: <한국어 요약, 72자 이내>
 
 Types: feat | fix | chore | ci | docs | refactor | test | style | perf | revert
 ```
 
+- No scope — do not use `(<scope>)`.
+- Summary in **Korean**, no trailing period.
+
 Examples:
-- `feat(scanner): add QR code scan page`
-- `fix(router): resolve redirect loop on 404`
-- `chore: update dependencies`
+- `feat: QR 코드 스캔 페이지 추가`
+- `fix: 404 페이지 리다이렉트 루프 수정`
+- `chore: 의존성 업데이트`
 
 Use `/commit` to generate the message automatically.
 

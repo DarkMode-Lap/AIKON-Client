@@ -1,26 +1,48 @@
-import { defineConfig, loadEnv } from 'vite'
+import { networkInterfaces } from 'os'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
+const API_TARGET = 'https://ssh.gsmsv.site:32641'
 
-  return {
-    plugins: [react(), tailwindcss()],
-    resolve: {
-      alias: {
-        '@': '/src',
-      },
-    },
-    server: {
-      proxy: {
-        '/api': {
-          target: env.VITE_API_BASE_URL,
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
-    },
+function getNetworkIP(): string | null {
+  for (const iface of Object.values(networkInterfaces())) {
+    for (const net of iface ?? []) {
+      if (net.family === 'IPv4' && !net.internal) return net.address
+    }
   }
+  return null
+}
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  define: {
+    __NETWORK_IP__: JSON.stringify(getNetworkIP()),
+  },
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
+  server: {
+    host: true,
+    proxy: {
+      '/api': {
+        target: API_TARGET,
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/s3': {
+        target: API_TARGET,
+        changeOrigin: true,
+        secure: false,
+      },
+      '/aikon': {
+        target: 'http://ssh.gsmsv.site:36375',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

@@ -1,9 +1,9 @@
-import { useNavigate, useSearchParams, useParams } from 'react-router'
+import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { Download, Share2, RefreshCw } from 'lucide-react'
 import { STYLE_OPTIONS, AIKON_RANGE } from '@/shared/lib/constants'
-import toast from 'react-hot-toast'
+import { useAvatarResult } from '@/features/avatar-result'
 
 function AvatarPlaceholder({ style, nickname }: { style: string; nickname: string }) {
   const styleInfo = STYLE_OPTIONS.find((s) => s.id === style)
@@ -25,49 +25,7 @@ function toAikonNumber(id: string): number {
 
 export default function ResultPage() {
   const navigate = useNavigate()
-  const { id } = useParams<{ id: string }>()
-  const [params] = useSearchParams()
-  const nickname = params.get('nickname') ?? '친구'
-  const style = params.get('style') ?? 'ghibli'
-  const imageUrl = params.get('imageUrl') ?? ''
-  function handleDownload() {
-    if (!imageUrl) {
-      toast('이미지 저장 기능은 백엔드 연결 후 활성화돼요 📁')
-      return
-    }
-    fetch(imageUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `aikon_${nickname}_${id}.jpg`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        setTimeout(() => URL.revokeObjectURL(url), 100)
-      })
-      .catch(() => toast.error('이미지 다운로드에 실패했어요. 😢'))
-  }
-
-  function handleShare() {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: `${nickname}의 AI PASS`,
-          text: '광주AI교육원에서 만든 나만의 AI 캐릭터! 🌟',
-          url: window.location.href,
-        })
-        .catch(() => null)
-    } else if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(window.location.href)
-        .then(() => toast.success('링크가 복사됐어요! 📋'))
-        .catch(() => toast.error('링크 복사에 실패했어요. 😢'))
-    } else {
-      toast.error('이 브라우저에서는 링크 복사를 지원하지 않아요. 😢')
-    }
-  }
+  const { id, nickname, style, imageUrl, handleDownload, handleShare } = useAvatarResult()
 
   return (
     <div className="fade-in relative min-h-dvh bg-white flex flex-col items-center px-4 py-6 overflow-hidden">
@@ -111,11 +69,11 @@ export default function ResultPage() {
             <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-500 to-pink-500 font-black text-lg">
               Aikon
             </span>
-            <span className="text-gray-400 font-bold text-sm">#{toAikonNumber(id ?? '')}</span>
+            <span className="text-gray-400 font-bold text-sm">#{toAikonNumber(id)}</span>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
             <QRCodeSVG
-              value={`${window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}${imageUrl ? `&imageUrl=${encodeURIComponent(imageUrl)}` : ''}`}
+              value={`${window.location.hostname === 'localhost' && __NETWORK_IP__ ? `http://${__NETWORK_IP__}:${window.location.port}` : window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}`}
               size={140}
               bgColor="#ffffff"
               fgColor="#1e0f3f"
