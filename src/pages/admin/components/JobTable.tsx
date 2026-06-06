@@ -102,45 +102,36 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
         </div>
       </div>
 
-      <div className="max-h-75 overflow-x-auto overflow-y-auto">
+      <div className="scrollbar-thin-y max-h-75 overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="flex h-75 items-center justify-center text-sm font-bold text-slate-400">
             {filter === 'ALL' ? '작업이 없습니다' : `${currentLabel} 항목이 없습니다`}
           </div>
         ) : (
-          <table className="w-full min-w-[800px] table-fixed border-collapse text-left">
-            <colgroup>
-              <col className="w-[12%]" />
-              <col className="w-[14%]" />
-              <col className="w-[14%]" />
-              <col className="w-[16%]" />
-              <col className="w-[14%]" />
-              <col className="w-[22%]" />
-              <col className="w-[8%]" />
-            </colgroup>
+          <table className="w-full table-auto border-collapse text-left">
             <thead className="sticky top-0 z-10">
               <tr className="h-10 bg-slate-50 text-xs font-black text-slate-500">
-                <th className="px-4 align-middle sm:px-5">AIKON</th>
-                <th className="px-4 align-middle">닉네임</th>
+                <th className="px-3 align-middle">AIKON</th>
+                <th className="px-3 align-middle">닉네임</th>
                 <th className="px-4 align-middle">스타일</th>
                 <th className="px-4 align-middle">성별/나이</th>
-                <th className="px-4 align-middle">상태</th>
+                <th className="pl-2 pr-4 align-middle">상태</th>
                 <th className="px-4 align-middle">생성시간</th>
-                <th className="px-4 align-middle">삭제</th>
+                <th className="pl-2 pr-4 align-middle">삭제</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((job) => (
                 <tr key={job.id} className="h-13 text-sm font-bold text-slate-500">
-                  <td className="px-4 align-middle font-black text-violet-500 sm:px-5">
+                  <td className="px-3 align-middle font-black text-violet-500">
                     {job.aikon}
                   </td>
-                  <td className="px-4 align-middle">{job.nickname}</td>
+                  <td className="px-3 align-middle">{job.nickname}</td>
                   <td className="px-4 align-middle">{job.style}</td>
                   <td className="px-4 align-middle">{job.profile}</td>
-                  <td className="px-4 align-middle">{job.status}</td>
+                  <td className="pl-2 pr-4 align-middle">{job.status}</td>
                   <td className="px-4 align-middle">{job.createdAt ?? '-'}</td>
-                  <td className="px-4 align-middle">
+                  <td className="pl-2 pr-4 align-middle">
                     {job.dbId !== undefined ? (
                       <button
                         type="button"
