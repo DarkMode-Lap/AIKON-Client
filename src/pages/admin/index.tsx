@@ -49,7 +49,7 @@ function toAdminJob(avatar: AvatarListItem, index: number): AdminJob {
   return {
     id: index,
     dbId: avatar.id,
-    aikon: avatar.passUrl ?? (avatar.id ? `Akikon${avatar.id}` : `#${index + 1}`),
+    aikon: avatar.passUrl ?? '-',
     nickname: avatar.nickname,
     style: avatar.style ? (STYLE_LABELS[avatar.style] ?? avatar.style) : '-',
     profile: `${gender}/${age}`,

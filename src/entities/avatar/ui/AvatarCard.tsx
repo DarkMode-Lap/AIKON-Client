@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import type { AvatarListItem } from '@/shared/api'
 
+const SPARKLES = ['⭐', '🌟', '✨', '💫']
+
 function cardParams(i: number) {
   const duration = 4 + (i % 5)
   const delay = (i * 0.55) % 4
@@ -17,34 +19,49 @@ interface AvatarCardProps {
 
 export function AvatarCard({ avatar, index }: AvatarCardProps) {
   const { duration, delay, rx, ry, y } = cardParams(index)
+  const sparkle = SPARKLES[index % SPARKLES.length]
 
   return (
     <motion.div
-      style={{ transformStyle: 'preserve-3d' }}
-      initial={{ opacity: 0, scale: 0.88 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        rotateX: rx,
-        rotateY: ry,
-        y,
+      style={{
+        transformStyle: 'preserve-3d',
+        boxShadow: '0 8px 32px rgba(139,92,246,0.18), 0 2px 8px rgba(0,0,0,0.05)',
       }}
+      initial={{ opacity: 0, scale: 0.5, y: 40 }}
+      animate={{ opacity: 1, scale: 1, rotateX: rx, rotateY: ry, y }}
       transition={{
-        opacity: { duration: 0.4, delay: index * 0.05 },
-        scale: { duration: 0.4, delay: index * 0.05 },
+        opacity: { duration: 0.3, delay: index * 0.06 },
+        scale: { type: 'spring', stiffness: 280, damping: 16, delay: index * 0.06 },
         rotateX: { duration, delay, repeat: Infinity, ease: 'easeInOut' },
         rotateY: { duration: duration * 1.1, delay, repeat: Infinity, ease: 'easeInOut' },
         y: { duration: duration * 0.9, delay, repeat: Infinity, ease: 'easeInOut' },
       }}
-      className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center gap-3 shadow-md"
+      className="relative flex flex-col items-center gap-3 rounded-3xl bg-white p-3"
     >
+      <motion.span
+        className="absolute -top-3 -right-2 text-2xl pointer-events-none select-none"
+        animate={{ rotate: [0, 20, -10, 0], scale: [1, 1.25, 0.9, 1] }}
+        transition={{
+          duration: 2.5 + (index % 3) * 0.5,
+          repeat: Infinity,
+          delay: index * 0.3,
+          ease: 'easeInOut',
+        }}
+      >
+        {sparkle}
+      </motion.span>
+
       <div
-        className="w-full aspect-square rounded-xl overflow-hidden shadow-lg"
-        style={{ transform: 'translateZ(20px)' }}
+        className="w-full aspect-square rounded-2xl overflow-hidden"
+        style={{ transform: 'translateZ(20px)', boxShadow: '0 4px 20px rgba(139,92,246,0.28)' }}
       >
         <img src={avatar.imageUrl} alt={avatar.nickname} className="w-full h-full object-cover" />
       </div>
-      <p className="text-xl font-black text-gray-800" style={{ transform: 'translateZ(10px)' }}>
+
+      <p
+        className="text-lg font-black text-violet-700 text-center leading-tight"
+        style={{ transform: 'translateZ(10px)' }}
+      >
         {avatar.nickname}
       </p>
     </motion.div>

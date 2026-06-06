@@ -97,3 +97,26 @@ body {
 .glow-purple {
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
 }
+
+/* Table scrollbar — thin vertical only */
+.scrollbar-thin-y {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+.scrollbar-thin-y::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-thin-y::-webkit-scrollbar:horizontal {
+  display: none;
+}
+.scrollbar-thin-y::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin-y::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+.scrollbar-thin-y::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
