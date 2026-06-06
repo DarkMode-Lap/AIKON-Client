@@ -39,7 +39,12 @@ export function AvatarCard({ avatar, index }: AvatarCardProps) {
       <motion.span
         className="absolute -top-3 -right-2 text-2xl pointer-events-none select-none"
         animate={{ rotate: [0, 20, -10, 0], scale: [1, 1.25, 0.9, 1] }}
-        transition={{ duration: 2.5 + (index % 3) * 0.5, repeat: Infinity, delay: index * 0.3, ease: 'easeInOut' }}
+        transition={{
+          duration: 2.5 + (index % 3) * 0.5,
+          repeat: Infinity,
+          delay: index * 0.3,
+          ease: 'easeInOut',
+        }}
       >
         {sparkle}
       </motion.span>

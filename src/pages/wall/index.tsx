@@ -7,11 +7,11 @@ import { AvatarGrid } from '@/widgets/avatar-wall'
 const PARTICIPATE_URL = `${window.location.origin}/create`
 
 const PARTICLES = [
-  { emoji: '⭐', left: '6%',  top: '12%', dur: 3.5, delay: 0 },
+  { emoji: '⭐', left: '6%', top: '12%', dur: 3.5, delay: 0 },
   { emoji: '✨', left: '88%', top: '18%', dur: 4.2, delay: 0.8 },
   { emoji: '🌟', left: '18%', top: '72%', dur: 3.8, delay: 1.4 },
   { emoji: '💫', left: '78%', top: '65%', dur: 5.0, delay: 0.4 },
-  { emoji: '⭐', left: '50%', top: '8%',  dur: 4.5, delay: 1.1 },
+  { emoji: '⭐', left: '50%', top: '8%', dur: 4.5, delay: 1.1 },
   { emoji: '✨', left: '93%', top: '82%', dur: 3.2, delay: 1.8 },
   { emoji: '🌟', left: '35%', top: '88%', dur: 4.0, delay: 0.6 },
 ]

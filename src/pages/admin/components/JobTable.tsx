@@ -123,9 +123,7 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
             <tbody>
               {filtered.map((job) => (
                 <tr key={job.id} className="h-13 text-sm font-bold text-slate-500">
-                  <td className="px-3 align-middle font-black text-violet-500">
-                    {job.aikon}
-                  </td>
+                  <td className="px-3 align-middle font-black text-violet-500">{job.aikon}</td>
                   <td className="px-3 align-middle">{job.nickname}</td>
                   <td className="px-4 align-middle">{job.style}</td>
                   <td className="px-4 align-middle">{job.profile}</td>
