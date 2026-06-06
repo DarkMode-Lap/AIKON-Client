@@ -64,6 +64,7 @@ export function useAvatarCreation(state: AvatarCreationState | null): { progress
       if (done) return
       try {
         const data = await getAvatar(avatarId)
+        if (done) return
         if (data.generationStatus === 'FAILED') {
           done = true
           clearInterval(progressTimer)
