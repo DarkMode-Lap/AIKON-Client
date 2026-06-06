@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 const API_TARGET = 'https://ssh.gsmsv.site:32641'
+const AIKON_TARGET = 'http://ssh.gsmsv.site:36375'
 
 function getNetworkIP(): string | null {
   for (const iface of Object.values(networkInterfaces())) {
@@ -39,7 +40,7 @@ export default defineConfig({
         secure: false,
       },
       '/aikon': {
-        target: 'http://ssh.gsmsv.site:36375',
+        target: AIKON_TARGET,
         changeOrigin: true,
         secure: false,
       },
