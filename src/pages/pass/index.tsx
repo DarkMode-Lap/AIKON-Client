@@ -30,12 +30,21 @@ export default function PassPage() {
     let cancelled = false
     let timer: ReturnType<typeof setTimeout>
     let retryCount = 0
+    let pollCount = 0
     const MAX_RETRIES = 5
+    const MAX_POLLS = 30
 
-    const numericId = parseInt(currentPassId.replace(/^Aikon/i, ''), 10)
+    const cleaned = currentPassId.replace(/^Aikon/i, '')
+    const numericId = /^\d+$/.test(cleaned) ? parseInt(cleaned, 10) : NaN
 
     async function poll() {
       if (cancelled) return
+      pollCount++
+      if (pollCount > MAX_POLLS) {
+        toast.error('아바타 생성 대기 시간이 초과되었습니다. 😢')
+        setLoading(false)
+        return
+      }
       try {
         const data = await getAvatarByPass(currentPassId).catch(() => {
           if (!isNaN(numericId)) return getAvatar(numericId)
