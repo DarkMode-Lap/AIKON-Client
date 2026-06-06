@@ -11,20 +11,40 @@ function extractErrorMessage(err: unknown): string {
   return err instanceof Error ? err.message : '알 수 없는 오류'
 }
 
+function toProxyUrl(url: unknown): string | null {
+  if (!url || typeof url !== 'string') return null
+  try {
+    const { pathname, search } = new URL(url)
+    return pathname + search
+  } catch {
+    return url
+  }
+}
+
+function parseAvatarRes(raw: Record<string, unknown>): GetAvatarRes {
+  return {
+    id: raw['id'] as number,
+    nickname: (raw['nickname'] as string) ?? '',
+    imageUrl: toProxyUrl(raw['imageUrl']),
+    passUrl: toProxyUrl(raw['passUrl']),
+    qrUrl: toProxyUrl(raw['qrUrl']),
+    generationStatus: (raw['generationStatus'] ?? null) as GetAvatarRes['generationStatus'],
+  }
+}
+
 export async function getAvatar(id: number): Promise<GetAvatarRes> {
   try {
     const res = await apiClient.get<Record<string, unknown>>(`/avatars/${id}`)
-    const raw = res.data
-    // Normalize snake_case ↔ camelCase so the poll works regardless of server convention
-    return {
-      id: raw['id'] as number,
-      nickname: (raw['nickname'] as string) ?? '',
-      imageUrl: (raw['imageUrl'] ?? raw['image_url'] ?? null) as string | null,
-      passUrl: (raw['passUrl'] ?? raw['pass_url'] ?? null) as string | null,
-      generationStatus: (raw['generationStatus'] ??
-        raw['generation_status'] ??
-        null) as GetAvatarRes['generationStatus'],
-    }
+    return parseAvatarRes(res.data)
+  } catch (err) {
+    throw new Error(extractErrorMessage(err), { cause: err })
+  }
+}
+
+export async function getAvatarByPass(passUrl: string): Promise<GetAvatarRes> {
+  try {
+    const res = await apiClient.get<Record<string, unknown>>(`/avatars/pass/${passUrl}`)
+    return parseAvatarRes(res.data)
   } catch (err) {
     throw new Error(extractErrorMessage(err), { cause: err })
   }

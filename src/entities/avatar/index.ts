@@ -8,4 +8,4 @@ export type {
   CreateFormData,
   GetAvatarRes,
 } from './model'
-export { getAvatar } from './api'
+export { getAvatar, getAvatarByPass } from './api'
