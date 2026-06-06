@@ -15,8 +15,7 @@ export default axiosInstance
 // Named wrapper that returns parsed data directly (used by shared/api/*.ts)
 export const apiClient = {
   get: <T>(path: string) => axiosInstance.get<T>(path).then((r) => r.data),
-  post: <T>(path: string, body?: unknown) =>
-    axiosInstance.post<T>(path, body).then((r) => r.data),
+  post: <T>(path: string, body?: unknown) => axiosInstance.post<T>(path, body).then((r) => r.data),
   patch: <T>(path: string, body?: unknown) =>
     axiosInstance.patch<T>(path, body).then((r) => r.data),
   delete: <T>(path: string) => axiosInstance.delete<T>(path).then((r) => r.data),
