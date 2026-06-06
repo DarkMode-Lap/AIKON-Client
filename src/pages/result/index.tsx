@@ -72,13 +72,7 @@ export default function ResultPage() {
             <span className="text-gray-400 font-bold text-sm">#{toAikonNumber(id)}</span>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
-            <QRCodeSVG
-              value={passUrl}
-              size={140}
-              bgColor="#ffffff"
-              fgColor="#1e0f3f"
-              level="M"
-            />
+            <QRCodeSVG value={passUrl} size={140} bgColor="#ffffff" fgColor="#1e0f3f" level="M" />
           </div>
           <p className="text-xs text-gray-400 text-center">
             QR코드를 체험 기기에 스캔해서 사용하세요 📱

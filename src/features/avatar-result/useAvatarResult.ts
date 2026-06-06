@@ -106,5 +106,14 @@ export function useAvatarResult(): UseAvatarResultReturn {
     ? `${appOrigin}/pass/${avatarData.passUrl}`
     : `${appOrigin}/pass/Aikon${id ?? ''}`
 
-  return { id: id ?? '', nickname, style, imageUrl, passUrl, avatarData, handleDownload, handleShare }
+  return {
+    id: id ?? '',
+    nickname,
+    style,
+    imageUrl,
+    passUrl,
+    avatarData,
+    handleDownload,
+    handleShare,
+  }
 }
