@@ -125,10 +125,8 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
                 <th className="px-4 align-middle">스타일</th>
                 <th className="px-4 align-middle">성별/나이</th>
                 <th className="px-4 align-middle">상태</th>
-                <th className="px-4 align-middle">시간</th>
-                <th className="px-4 align-middle">
-                  <span className="sr-only">관리</span>
-                </th>
+                <th className="px-4 align-middle">생성시간</th>
+                <th className="px-4 align-middle">삭제</th>
               </tr>
             </thead>
             <tbody>
