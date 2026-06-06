@@ -23,14 +23,17 @@ export function useAvatarResult(): UseAvatarResultReturn {
   const [avatarData, setAvatarData] = useState<GetAvatarRes | null>(null)
 
   useEffect(() => {
-    if (!id) return
+    const avatarId = Number(id)
+    if (!id || isNaN(avatarId)) return
     let cancelled = false
     let timer: ReturnType<typeof setTimeout>
+    let retryCount = 0
+    const MAX_RETRIES = 5
 
     async function poll() {
       if (cancelled) return
       try {
-        const data = await getAvatar(Number(id))
+        const data = await getAvatar(avatarId)
         if (cancelled) return
         setAvatarData(data)
         const done =
@@ -39,7 +42,13 @@ export function useAvatarResult(): UseAvatarResultReturn {
           !!data.imageUrl
         if (!done) timer = setTimeout(poll, 3000)
       } catch {
-        if (!cancelled) timer = setTimeout(poll, 3000)
+        if (cancelled) return
+        retryCount++
+        if (retryCount >= MAX_RETRIES) {
+          toast.error('아바타 정보를 불러오는 데 실패했습니다. 😢')
+          return
+        }
+        timer = setTimeout(poll, 3000)
       }
     }
 
