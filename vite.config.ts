@@ -38,6 +38,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/aikon': {
+        target: 'http://ssh.gsmsv.site:36375',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })
