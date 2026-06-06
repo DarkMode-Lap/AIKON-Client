@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { subscribeToAvatarChanges, type AvatarListItem } from '@/shared/api'
 import { AvatarGrid } from '@/widgets/avatar-wall'
 
 const PARTICIPATE_URL = `${window.location.origin}/create`
+
+const PARTICLES = [
+  { emoji: '⭐', left: '6%',  top: '12%', dur: 3.5, delay: 0 },
+  { emoji: '✨', left: '88%', top: '18%', dur: 4.2, delay: 0.8 },
+  { emoji: '🌟', left: '18%', top: '72%', dur: 3.8, delay: 1.4 },
+  { emoji: '💫', left: '78%', top: '65%', dur: 5.0, delay: 0.4 },
+  { emoji: '⭐', left: '50%', top: '8%',  dur: 4.5, delay: 1.1 },
+  { emoji: '✨', left: '93%', top: '82%', dur: 3.2, delay: 1.8 },
+  { emoji: '🌟', left: '35%', top: '88%', dur: 4.0, delay: 0.6 },
+]
 
 export default function WallPage() {
   const [avatars, setAvatars] = useState<AvatarListItem[] | null>(null)
@@ -18,6 +28,7 @@ export default function WallPage() {
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-white">
+      {/* Background blobs */}
       <motion.div
         className="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full bg-violet-200 opacity-40 blur-3xl"
         animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
@@ -28,6 +39,19 @@ export default function WallPage() {
         animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
+
+      {/* Floating star particles */}
+      {PARTICLES.map((p, i) => (
+        <motion.div
+          key={i}
+          className="pointer-events-none absolute text-2xl select-none"
+          style={{ left: p.left, top: p.top }}
+          animate={{ y: [0, -18, 0], rotate: [0, 15, -10, 0], opacity: [0.45, 0.75, 0.45] }}
+          transition={{ duration: p.dur, repeat: Infinity, delay: p.delay, ease: 'easeInOut' }}
+        >
+          {p.emoji}
+        </motion.div>
+      ))}
 
       <header className="relative z-10 flex-none border-b border-gray-100 px-8 py-6">
         <div className="flex items-stretch gap-4">
@@ -59,27 +83,32 @@ export default function WallPage() {
         </main>
 
         <aside className="flex w-72 flex-none flex-col gap-8 border-l border-gray-100 px-6 py-8">
+          {/* Live count */}
           <div>
             <p className="mb-3 text-xs font-black tracking-widest text-violet-400 uppercase">
-              Live Statistics
+              ✨ Live Statistics
             </p>
-            <motion.p
-              key={avatars?.length ?? 0}
-              className="text-7xl font-black leading-none text-violet-500"
-              initial={{ scale: 1.3, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            >
-              {avatars?.length ?? '-'}
-            </motion.p>
-            <p className="mt-2 text-sm font-semibold text-gray-400">Total AI Avatars</p>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={avatars?.length ?? 0}
+                className="text-7xl font-black leading-none text-violet-500"
+                initial={{ scale: 1.6, opacity: 0, y: -10 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.7, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 16 }}
+              >
+                {avatars?.length ?? '-'}
+              </motion.p>
+            </AnimatePresence>
+            <p className="mt-2 text-sm font-semibold text-gray-400">Total AI Avatars 🎨</p>
           </div>
 
+          {/* QR section */}
           <div>
             <p className="mb-4 text-xs font-black tracking-widest text-violet-400 uppercase">
-              How to Participate
+              🎮 How to Participate
             </p>
-            <div className="flex flex-col items-center gap-2 rounded-2xl border border-gray-100 p-4 shadow-sm">
+            <div className="flex flex-col items-center gap-2 rounded-3xl border-2 border-violet-100 bg-violet-50 p-4 shadow-sm">
               <QRCodeSVG value={PARTICIPATE_URL} size={160} />
               <p className="text-xs font-semibold text-gray-400">{window.location.host}/create</p>
             </div>
