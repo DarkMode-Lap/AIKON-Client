@@ -25,7 +25,7 @@ function toAikonNumber(id: string): number {
 
 export default function ResultPage() {
   const navigate = useNavigate()
-  const { id, nickname, style, imageUrl, handleDownload, handleShare } = useAvatarResult()
+  const { id, nickname, style, imageUrl, passUrl, handleDownload, handleShare } = useAvatarResult()
 
   return (
     <div className="fade-in relative min-h-dvh bg-white flex flex-col items-center px-4 py-6 overflow-hidden">
@@ -73,7 +73,7 @@ export default function ResultPage() {
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
             <QRCodeSVG
-              value={`${window.location.hostname === 'localhost' && __NETWORK_IP__ ? `http://${__NETWORK_IP__}:${window.location.port}` : window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}`}
+              value={passUrl}
               size={140}
               bgColor="#ffffff"
               fgColor="#1e0f3f"
