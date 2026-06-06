@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://ssh.gsmsv.site:32641/:path*"
+    },
+    {
+      "source": "/s3/:path*",
+      "destination": "https://ssh.gsmsv.site:32641/s3/:path*"
+    },
+    {
+      "source": "/aikon/:path*",
+      "destination": "http://ssh.gsmsv.site:36375/aikon/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
