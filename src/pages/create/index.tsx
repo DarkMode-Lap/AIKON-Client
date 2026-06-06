@@ -31,6 +31,7 @@ export default function CreatePage() {
     photoPreview: null,
   })
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isCompressing, setIsCompressing] = useState(false)
 
   useEffect(() => {
     return () => {
@@ -75,11 +76,14 @@ export default function CreatePage() {
     // 즉시 미리보기 표시
     const previewUrl = URL.createObjectURL(file)
     setForm((f) => ({ ...f, photoFile: file, photoPreview: previewUrl }))
+    setIsCompressing(true)
     try {
       const compressed = await compressImage(file)
       setForm((f) => ({ ...f, photoFile: compressed }))
     } catch {
       // 압축 실패 시 원본 그대로 사용
+    } finally {
+      setIsCompressing(false)
     }
     toast.success('사진이 선택됐어요! 🖼️')
   }
@@ -190,16 +194,16 @@ export default function CreatePage() {
       <div className="fade-in-2 relative z-10 w-full max-w-md mt-4">
         <button
           onClick={goNext}
-          disabled={!canProceed()}
+          disabled={!canProceed() || isCompressing}
           className={cn(
             'btn-magic w-full py-4 text-white text-base flex items-center justify-center gap-2 transition-opacity',
-            !canProceed() && 'opacity-40 cursor-not-allowed',
+            (!canProceed() || isCompressing) && 'opacity-40 cursor-not-allowed',
           )}
         >
           {step === TOTAL_STEPS ? (
             <>
               <Sparkles className="w-5 h-5" />
-              AI 캐릭터 만들기!
+              {isCompressing ? '사진 처리 중...' : 'AI 캐릭터 만들기!'}
               <Sparkles className="w-5 h-5" />
             </>
           ) : (
