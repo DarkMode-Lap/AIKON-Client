@@ -24,9 +24,30 @@ export function useAvatarResult(): UseAvatarResultReturn {
 
   useEffect(() => {
     if (!id) return
-    getAvatar(Number(id))
-      .then(setAvatarData)
-      .catch(() => null)
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout>
+
+    async function poll() {
+      if (cancelled) return
+      try {
+        const data = await getAvatar(Number(id))
+        if (cancelled) return
+        setAvatarData(data)
+        const done =
+          data.generationStatus === 'COMPLETED' ||
+          data.generationStatus === 'FAILED' ||
+          !!data.imageUrl
+        if (!done) timer = setTimeout(poll, 3000)
+      } catch {
+        if (!cancelled) timer = setTimeout(poll, 3000)
+      }
+    }
+
+    void poll()
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
   }, [id])
 
   const imageUrl = avatarData?.imageUrl ?? ''
