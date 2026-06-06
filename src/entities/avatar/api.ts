@@ -13,7 +13,6 @@ function extractErrorMessage(err: unknown): string {
 
 function toProxyUrl(url: unknown): string | null {
   if (!url || typeof url !== 'string') return null
-  if (!import.meta.env.DEV) return url
   try {
     const { pathname, search } = new URL(url)
     return pathname + search
@@ -37,8 +36,8 @@ function parseAvatarRes(raw: Record<string, unknown> | null | undefined): GetAva
     id: raw['id'] as number,
     nickname: (raw['nickname'] as string) ?? '',
     imageUrl: toProxyUrl(raw['imageUrl']),
-    passUrl: toProxyUrl(raw['passUrl']),
-    qrUrl: toProxyUrl(raw['qrUrl']),
+    passUrl: typeof raw['passUrl'] === 'string' ? raw['passUrl'] : null,
+    qrUrl: typeof raw['qrUrl'] === 'string' ? raw['qrUrl'] : null,
     generationStatus: (raw['generationStatus'] ?? null) as GetAvatarRes['generationStatus'],
   }
 }
