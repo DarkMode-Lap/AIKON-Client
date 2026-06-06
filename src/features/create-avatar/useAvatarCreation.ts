@@ -4,7 +4,6 @@ import toast from 'react-hot-toast'
 import { getAvatar } from '@/entities/avatar'
 import type { AvatarStyle, AgeGroup, Gender } from '@/entities/avatar'
 import { createAvatar } from './api'
-import type { CreateAvatarRes } from './api'
 
 export interface AvatarCreationState {
   image: File
@@ -13,10 +12,6 @@ export interface AvatarCreationState {
   style: AvatarStyle
   ageRange: AgeGroup
 }
-
-// Module-level: shared across Strict Mode double-invocations so only one POST fires.
-// Cleared after the Promise settles so re-entry from a fresh navigation starts clean.
-let pendingCreate: Promise<CreateAvatarRes> | null = null
 
 export function useAvatarCreation(state: AvatarCreationState | null): { progress: number } {
   const navigate = useNavigate()
@@ -87,23 +82,17 @@ export function useAvatarCreation(state: AvatarCreationState | null): { progress
       if (!done) pollTimeout = setTimeout(() => void poll(avatarId), 3000)
     }
 
-    if (!pendingCreate) {
-      pendingCreate = createAvatar({
-        image: state.image,
-        nickname: state.nickname,
-        gender: state.gender,
-        style: state.style,
-        ageRange: state.ageRange,
-      })
-    }
-
-    pendingCreate
+    createAvatar({
+      image: state.image,
+      nickname: state.nickname,
+      gender: state.gender,
+      style: state.style,
+      ageRange: state.ageRange,
+    })
       .then((res) => {
-        pendingCreate = null
         if (!done) void poll(res.id)
       })
       .catch((err) => {
-        pendingCreate = null
         if (done) return
         const detail = err instanceof Error ? err.message : '알 수 없는 오류'
         toast.error(`아바타 생성 실패: ${detail}`)
