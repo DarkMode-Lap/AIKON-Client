@@ -102,13 +102,13 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
         </div>
       </div>
 
-      <div className="max-h-75 overflow-y-auto">
+      <div className="max-h-75 overflow-x-auto overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="flex h-75 items-center justify-center text-sm font-bold text-slate-400">
             {filter === 'ALL' ? '작업이 없습니다' : `${currentLabel} 항목이 없습니다`}
           </div>
         ) : (
-          <table className="w-full table-fixed border-collapse text-left">
+          <table className="w-full min-w-[800px] table-fixed border-collapse text-left">
             <colgroup>
               <col className="w-[12%]" />
               <col className="w-[14%]" />
