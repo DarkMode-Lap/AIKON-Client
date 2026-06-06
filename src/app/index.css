@@ -17,3 +17,83 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Fade-in animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s 0s ease both;
+}
+.fade-in-1 {
+  animation: fadeIn 0.4s 0.08s ease both;
+}
+.fade-in-2 {
+  animation: fadeIn 0.4s 0.16s ease both;
+}
+.fade-in-3 {
+  animation: fadeIn 0.4s 0.24s ease both;
+}
+.fade-in-4 {
+  animation: fadeIn 0.4s 0.32s ease both;
+}
+.fade-in-5 {
+  animation: fadeIn 0.4s 0.4s ease both;
+}
+
+/* Magic gradient button */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.btn-magic {
+  background: linear-gradient(135deg, #ca83ff, #ff53bd, #ca83ff);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn-magic:active {
+  opacity: 0.88;
+  transform: scale(0.98);
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(139, 92, 246, 0.15);
+  border-radius: 16px;
+}
+
+/* Active step indicator */
+.step-active {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+}
+
+/* Purple glow shadow */
+.glow-purple {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
+}

@@ -19,10 +19,12 @@ Create a well-formed conventional commit for all staged (or all changed) files.
    - `revert` — reverting a prior commit
 4. Write the commit message in this format:
    ```
-   <type>(<optional scope>): <short summary in imperative mood, max 72 chars>
+   <type>: <short summary in Korean, max 72 chars>
    ```
-   - Summary must be in **English**, lowercase after the colon, no trailing period.
-   - Add a blank line + bullet-point body **only** if the change needs context that the summary can't capture.
+   - **No scope** — do not use `(<scope>)`.
+   - Summary must be in **Korean**, no trailing period.
+   - **No body, no bullet points** — keep it to one line only.
+   - If the diff spans multiple concerns, split into separate commits instead of listing them in the body.
 5. Show the proposed commit message and ask the user to confirm or edit before committing.
 6. Run `git commit -m "<message>"` with the confirmed message.
 7. Report the resulting commit hash and summary.
@@ -35,7 +37,7 @@ Create a well-formed conventional commit for all staged (or all changed) files.
 ## Example output
 ```
 Proposed commit:
-  feat(auth): add OTP login flow
+  feat: OTP 로그인 플로우 추가
 
 Proceed? [y/n/edit]
 ```
