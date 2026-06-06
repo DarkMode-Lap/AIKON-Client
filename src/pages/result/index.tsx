@@ -25,7 +25,7 @@ function toAikonNumber(id: string): number {
 
 export default function ResultPage() {
   const navigate = useNavigate()
-  const { id, nickname, style, imageUrl, handleDownload, handleShare } = useAvatarResult()
+  const { id, nickname, style, imageUrl, passUrl, handleDownload, handleShare } = useAvatarResult()
 
   return (
     <div className="fade-in relative min-h-dvh bg-white flex flex-col items-center px-4 py-6 overflow-hidden">
@@ -72,13 +72,7 @@ export default function ResultPage() {
             <span className="text-gray-400 font-bold text-sm">#{toAikonNumber(id)}</span>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
-            <QRCodeSVG
-              value={`${window.location.hostname === 'localhost' && __NETWORK_IP__ ? `http://${__NETWORK_IP__}:${window.location.port}` : window.location.origin}/result/${id}?nickname=${encodeURIComponent(nickname)}&style=${style}`}
-              size={140}
-              bgColor="#ffffff"
-              fgColor="#1e0f3f"
-              level="M"
-            />
+            <QRCodeSVG value={passUrl} size={140} bgColor="#ffffff" fgColor="#1e0f3f" level="M" />
           </div>
           <p className="text-xs text-gray-400 text-center">
             QR코드를 체험 기기에 스캔해서 사용하세요 📱

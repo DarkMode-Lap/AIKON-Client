@@ -9,6 +9,7 @@ interface UseAvatarResultReturn {
   nickname: string
   style: string
   imageUrl: string
+  passUrl: string
   avatarData: GetAvatarRes | null
   handleDownload: () => void
   handleShare: () => void
@@ -100,5 +101,19 @@ export function useAvatarResult(): UseAvatarResultReturn {
     }
   }
 
-  return { id: id ?? '', nickname, style, imageUrl, avatarData, handleDownload, handleShare }
+  const appOrigin = import.meta.env.VITE_APP_URL ?? window.location.origin
+  const passUrl = avatarData?.passUrl
+    ? `${appOrigin}/pass/${avatarData.passUrl}`
+    : `${appOrigin}/pass/Aikon${id ?? ''}`
+
+  return {
+    id: id ?? '',
+    nickname,
+    style,
+    imageUrl,
+    passUrl,
+    avatarData,
+    handleDownload,
+    handleShare,
+  }
 }
