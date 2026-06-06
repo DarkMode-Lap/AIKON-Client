@@ -21,7 +21,17 @@ function toProxyUrl(url: unknown): string | null {
   }
 }
 
-function parseAvatarRes(raw: Record<string, unknown>): GetAvatarRes {
+function parseAvatarRes(raw: Record<string, unknown> | null | undefined): GetAvatarRes {
+  if (!raw) {
+    return {
+      id: 0,
+      nickname: '',
+      imageUrl: null,
+      passUrl: null,
+      qrUrl: null,
+      generationStatus: null,
+    }
+  }
   return {
     id: raw['id'] as number,
     nickname: (raw['nickname'] as string) ?? '',
