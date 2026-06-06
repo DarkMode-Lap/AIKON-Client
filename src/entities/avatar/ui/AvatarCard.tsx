@@ -23,7 +23,10 @@ export function AvatarCard({ avatar, index }: AvatarCardProps) {
 
   return (
     <motion.div
-      style={{ transformStyle: 'preserve-3d' }}
+      style={{
+        transformStyle: 'preserve-3d',
+        boxShadow: '0 8px 32px rgba(139,92,246,0.18), 0 2px 8px rgba(0,0,0,0.05)',
+      }}
       initial={{ opacity: 0, scale: 0.5, y: 40 }}
       animate={{ opacity: 1, scale: 1, rotateX: rx, rotateY: ry, y }}
       transition={{
@@ -33,8 +36,7 @@ export function AvatarCard({ avatar, index }: AvatarCardProps) {
         rotateY: { duration: duration * 1.1, delay, repeat: Infinity, ease: 'easeInOut' },
         y: { duration: duration * 0.9, delay, repeat: Infinity, ease: 'easeInOut' },
       }}
-      className="relative rounded-3xl bg-white p-3 flex flex-col items-center gap-3"
-      style={{ boxShadow: '0 8px 32px rgba(139,92,246,0.18), 0 2px 8px rgba(0,0,0,0.05)' }}
+      className="relative flex flex-col items-center gap-3 rounded-3xl bg-white p-3"
     >
       <motion.span
         className="absolute -top-3 -right-2 text-2xl pointer-events-none select-none"
