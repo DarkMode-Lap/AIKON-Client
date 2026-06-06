@@ -21,13 +21,10 @@ function AvatarPlaceholder({ style, nickname }: { style: string; nickname: strin
 export default function PassPage() {
   const { passId } = useParams<{ passId: string }>()
   const [avatarData, setAvatarData] = useState<GetAvatarRes | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(passId))
 
   useEffect(() => {
-    if (!passId) {
-      setLoading(false)
-      return
-    }
+    if (!passId) return
 
     const currentPassId = passId
     let cancelled = false
