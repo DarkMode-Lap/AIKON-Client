@@ -21,7 +21,14 @@ export default function WallPage() {
 
   useEffect(() => {
     const unsub = subscribeToAvatarChanges((list) => {
-      setAvatars(list.filter((a) => a.generationStatus === 'COMPLETED' && a.imageUrl))
+      setAvatars(
+        list
+          .filter((a) => a.generationStatus === 'COMPLETED' && a.imageUrl)
+          .sort((a, b) => {
+            if (!a.createdAt || !b.createdAt) return 0
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          }),
+      )
     })
     return unsub
   }, [])
