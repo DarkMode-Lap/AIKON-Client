@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, RefreshCw } from 'lucide-react'
-import type { GenerationStatus } from '@/shared/api'
+import type { GenerationStatus, AvatarGender, AvatarAgeRange } from '@/shared/api'
 
 export type AdminJob = {
   id: number
@@ -11,6 +11,8 @@ export type AdminJob = {
   profile: string
   status: string
   generationStatus?: GenerationStatus
+  rawGender?: AvatarGender
+  rawAgeRange?: AvatarAgeRange
   createdAt?: string
 }
 
@@ -30,9 +32,16 @@ type JobTableProps = {
   isRefreshing: boolean
   onRefresh: () => void
   onDelete: (jobId: number) => void
+  onEdit: (job: AdminJob) => void
 }
 
-export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: JobTableProps) {
+export default function JobTable({
+  jobs,
+  isRefreshing,
+  onRefresh,
+  onDelete,
+  onEdit,
+}: JobTableProps) {
   const [filter, setFilter] = useState<GenerationStatus | 'ALL'>('ALL')
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -117,7 +126,7 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
                 <th className="px-4 align-middle">성별/나이</th>
                 <th className="pl-2 pr-4 align-middle">상태</th>
                 <th className="px-4 align-middle">생성시간</th>
-                <th className="pl-2 pr-4 align-middle">삭제</th>
+                <th className="pl-2 pr-4 align-middle">액션</th>
               </tr>
             </thead>
             <tbody>
@@ -131,13 +140,23 @@ export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete }: Jo
                   <td className="px-4 align-middle">{job.createdAt ?? '-'}</td>
                   <td className="pl-2 pr-4 align-middle">
                     {job.dbId !== undefined ? (
-                      <button
-                        type="button"
-                        onClick={() => onDelete(job.dbId!)}
-                        className="text-sm font-black text-rose-500 transition-colors hover:text-rose-600"
-                      >
-                        삭제
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onEdit(job)}
+                          className="text-sm font-black text-violet-500 transition-colors hover:text-violet-600"
+                        >
+                          수정
+                        </button>
+                        <span className="text-slate-200">|</span>
+                        <button
+                          type="button"
+                          onClick={() => onDelete(job.dbId!)}
+                          className="text-sm font-black text-rose-500 transition-colors hover:text-rose-600"
+                        >
+                          삭제
+                        </button>
+                      </div>
                     ) : (
                       <span className="text-xs text-slate-300">-</span>
                     )}
