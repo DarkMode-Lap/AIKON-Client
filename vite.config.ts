@@ -17,35 +17,35 @@ export default defineConfig(({ mode }) => {
   const API_TARGET = env.VITE_API_TARGET
   const AIKON_TARGET = env.VITE_AIKON_TARGET
   return {
-  plugins: [react(), tailwindcss()],
-  define: {
-    __NETWORK_IP__: JSON.stringify(getNetworkIP()),
-  },
-  resolve: {
-    alias: {
-      '@': '/src',
+    plugins: [react(), tailwindcss()],
+    define: {
+      __NETWORK_IP__: JSON.stringify(getNetworkIP()),
     },
-  },
-  server: {
-    host: true,
-    proxy: {
-      '/api': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-      '/s3': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/aikon': {
-        target: AIKON_TARGET,
-        changeOrigin: true,
-        secure: false,
+    resolve: {
+      alias: {
+        '@': '/src',
       },
     },
-  },
+    server: {
+      host: true,
+      proxy: {
+        '/api': {
+          target: API_TARGET,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        '/s3': {
+          target: API_TARGET,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/aikon': {
+          target: AIKON_TARGET,
+          changeOrigin: true,
+          secure: false,
+        },
+      },
+    },
   }
 })
