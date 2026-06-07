@@ -24,8 +24,8 @@ export function useAvatarCreation(state: AvatarCreationState | null): { progress
     }
 
     // Exponential approach: pct = 99 * (1 - e^(-elapsed / TAU))
-    // TAU = 0.8s: reaches ~99% in ~5 seconds, then holds until API confirms completion.
-    const TAU = 800
+    // TAU = 1.4s: reaches ~99% in ~8-9 seconds, then holds until API confirms completion.
+    const TAU = 1400
     const tick = 100
     const MAX_WAIT_MS = 300_000
     let elapsed = 0

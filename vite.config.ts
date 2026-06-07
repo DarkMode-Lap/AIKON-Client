@@ -1,10 +1,7 @@
 import { networkInterfaces } from 'os'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-
-const API_TARGET = 'https://ssh.gsmsv.site:32641'
-const AIKON_TARGET = 'http://ssh.gsmsv.site:36375'
 
 function getNetworkIP(): string | null {
   for (const iface of Object.values(networkInterfaces())) {
@@ -15,35 +12,40 @@ function getNetworkIP(): string | null {
   return null
 }
 
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  define: {
-    __NETWORK_IP__: JSON.stringify(getNetworkIP()),
-  },
-  resolve: {
-    alias: {
-      '@': '/src',
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const API_TARGET = env.VITE_API_TARGET
+  const AIKON_TARGET = env.VITE_AIKON_TARGET
+  return {
+    plugins: [react(), tailwindcss()],
+    define: {
+      __NETWORK_IP__: JSON.stringify(getNetworkIP()),
     },
-  },
-  server: {
-    host: true,
-    proxy: {
-      '/api': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-      '/s3': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/aikon': {
-        target: AIKON_TARGET,
-        changeOrigin: true,
-        secure: false,
+    resolve: {
+      alias: {
+        '@': '/src',
       },
     },
-  },
+    server: {
+      host: true,
+      proxy: {
+        '/api': {
+          target: API_TARGET,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        '/s3': {
+          target: API_TARGET,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/aikon': {
+          target: AIKON_TARGET,
+          changeOrigin: true,
+          secure: false,
+        },
+      },
+    },
+  }
 })
