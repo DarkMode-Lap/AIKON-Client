@@ -23,7 +23,7 @@ export default function ResultPage() {
   const { id, nickname, style, imageUrl, avatarData, handleDownload, handleShare } =
     useAvatarResult()
 
-  const aikonNumber = /\d+$/.exec(avatarData?.passUrl ?? '')?.[0] ?? id
+  const aikonNumber = avatarData ? (/\d+$/.exec(avatarData.passUrl ?? '')?.[0] ?? id) : '...'
 
   return (
     <div className="fade-in relative min-h-dvh bg-white flex flex-col items-center px-4 py-6 overflow-hidden">
@@ -70,13 +70,17 @@ export default function ResultPage() {
             <span className="text-gray-400 font-bold text-sm">#{aikonNumber}</span>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
-            <QRCodeSVG
-              value={avatarData?.passUrl ?? `Aikon${id}`}
-              size={140}
-              bgColor="#ffffff"
-              fgColor="#1e0f3f"
-              level="M"
-            />
+            {avatarData ? (
+              <QRCodeSVG
+                value={avatarData.passUrl ?? `Aikon${id}`}
+                size={140}
+                bgColor="#ffffff"
+                fgColor="#1e0f3f"
+                level="M"
+              />
+            ) : (
+              <div className="w-35 h-35 bg-gray-100 animate-pulse rounded-lg" />
+            )}
           </div>
           <p className="text-xs text-gray-400 text-center">
             QR코드를 체험 기기에 스캔해서 사용하세요 📱
