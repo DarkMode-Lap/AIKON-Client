@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
 import type { AvatarGender, AvatarAgeRange } from '@/shared/api'
 
 type EditData = {
@@ -16,9 +17,9 @@ type EditAvatarModalProps = {
   onConfirm: (data: EditData) => Promise<void>
 }
 
-const GENDER_OPTIONS: { value: AvatarGender; label: string; emoji: string }[] = [
-  { value: 'MALE', label: '남자', emoji: '👦' },
-  { value: 'FEMALE', label: '여자', emoji: '👧' },
+const GENDER_OPTIONS: { value: AvatarGender; label: string }[] = [
+  { value: 'MALE', label: '남자' },
+  { value: 'FEMALE', label: '여자' },
 ]
 
 const AGE_OPTIONS: { value: AvatarAgeRange; label: string }[] = [
@@ -61,119 +62,106 @@ export default function EditAvatarModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center px-0 sm:items-center sm:px-5"
+      className="fixed inset-0 z-50 flex items-center justify-center px-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="edit-modal-title"
       onKeyDown={handleKeyDown}
     >
-      {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/25 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Card */}
       <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        className="relative w-full max-w-[480px] rounded-t-[24px] bg-white px-6 pb-8 pt-6 shadow-xl sm:rounded-[20px] sm:px-8 sm:pb-8 sm:pt-7"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
+        className="relative w-full max-w-100 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
       >
-        {/* Drag handle (mobile) */}
-        <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-slate-200 sm:hidden" />
-
         {/* Header */}
-        <div className="mb-7">
-          <h2
-            id="edit-modal-title"
-            className="text-[22px] leading-8 font-black text-slate-950 sm:text-[24px]"
-          >
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+          <h2 id="edit-modal-title" className="text-base font-black text-slate-900">
             아바타 수정
           </h2>
-          <p className="mt-1 text-sm font-semibold text-slate-400">
-            이름, 성별, 나이대를 변경할 수 있어요
-          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+            aria-label="닫기"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
-        {/* Nickname */}
-        <div className="mb-5">
-          <label className="mb-2 block text-[11px] font-black tracking-widest text-slate-400 uppercase">
-            닉네임
-          </label>
-          <input
-            type="text"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            maxLength={20}
-            autoFocus
-            className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 px-4 py-3.5 text-sm font-bold text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
-            placeholder="닉네임 입력 (2자 이상)"
-          />
-        </div>
-
-        {/* Gender */}
-        <div className="mb-5">
-          <label className="mb-2 block text-[11px] font-black tracking-widest text-slate-400 uppercase">
-            성별
-          </label>
-          <div className="grid grid-cols-2 gap-3">
-            {GENDER_OPTIONS.map((opt) => {
-              const active = gender === opt.value
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setGender(active ? undefined : opt.value)}
-                  className={`relative h-12 rounded-2xl text-sm font-black transition-all duration-200 ${
-                    active
-                      ? 'bg-violet-500 text-white'
-                      : 'border-2 border-slate-100 bg-slate-50 text-slate-500 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-500'
-                  }`}
-                >
-                  <span className="mr-1.5">{opt.emoji}</span>
-                  {opt.label}
-                </button>
-              )
-            })}
+        {/* Body */}
+        <div className="space-y-4 px-5 py-5">
+          {/* Nickname */}
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-500">닉네임</label>
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              maxLength={20}
+              autoFocus
+              className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-800 outline-none transition-colors placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+              placeholder="닉네임 입력"
+            />
           </div>
-        </div>
 
-        {/* Age Range */}
-        <div className="mb-8">
-          <label className="mb-2 block text-[11px] font-black tracking-widest text-slate-400 uppercase">
-            나이대
-          </label>
-          <div className="grid grid-cols-4 gap-2">
-            {AGE_OPTIONS.map((opt) => {
-              const active = ageRange === opt.value
-              return (
+          {/* Gender */}
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-500">성별</label>
+            <div className="flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+              {GENDER_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
-                  onClick={() => setAgeRange(active ? undefined : opt.value)}
-                  className={`h-11 rounded-2xl text-sm font-black transition-all duration-200 ${
-                    active
-                      ? 'bg-violet-500 text-white'
-                      : 'border-2 border-slate-100 bg-slate-50 text-slate-500 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-500'
+                  onClick={() => setGender(opt.value)}
+                  className={`h-9 flex-1 rounded-lg text-sm font-bold transition-all ${
+                    gender === opt.value
+                      ? 'border border-slate-200 bg-white text-violet-600 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-600'
                   }`}
                 >
                   {opt.label}
                 </button>
-              )
-            })}
+              ))}
+            </div>
+          </div>
+
+          {/* Age Range */}
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-500">나이대</label>
+            <div className="flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+              {AGE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setAgeRange(opt.value)}
+                  className={`h-9 flex-1 rounded-lg text-sm font-bold transition-all ${
+                    ageRange === opt.value
+                      ? 'border border-slate-200 bg-white text-violet-600 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Footer */}
+        <div className="flex gap-2.5 border-t border-slate-100 px-5 py-4">
           <button
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="h-12 rounded-2xl border-2 border-slate-100 bg-white text-base font-black text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-50"
+            className="h-10 flex-1 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-50"
           >
             취소
           </button>
@@ -181,7 +169,7 @@ export default function EditAvatarModal({
             type="button"
             onClick={handleSave}
             disabled={!canSave || isSaving}
-            className="h-12 rounded-2xl bg-violet-500 text-base font-black text-white transition-colors hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-40"
+            className="h-10 flex-1 rounded-xl bg-violet-500 text-sm font-bold text-white transition-colors hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {isSaving ? '저장 중…' : '저장'}
           </button>
