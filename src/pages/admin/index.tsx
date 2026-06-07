@@ -10,9 +10,9 @@ import {
   type AvatarGender,
   type AvatarAgeRange,
 } from '@/shared/api'
-import ConfirmModal from './components/ConfirmModal'
-import EditAvatarModal from './components/EditAvatarModal'
-import JobTable, { type AdminJob } from './components/JobTable'
+import ConfirmModal from './ui/ConfirmModal'
+import EditAvatarModal from './ui/EditAvatarModal'
+import JobTable, { type AdminJob } from './ui/JobTable'
 
 const STYLE_LABELS: Record<string, string> = {
   STUDIO: '스튜디오',
