@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://ssh.gsmsv.site:32641/:path*"
+      "destination": "https://dark.mode.gsmsv.site/:path*"
     },
     {
       "source": "/s3/:path*",
-      "destination": "https://ssh.gsmsv.site:32641/s3/:path*"
+      "destination": "https://dark.mode.gsmsv.site/s3/:path*"
     },
     {
       "source": "/aikon/:path*",
