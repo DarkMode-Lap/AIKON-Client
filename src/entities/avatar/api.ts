@@ -13,7 +13,6 @@ function extractErrorMessage(err: unknown): string {
 
 function toProxyUrl(url: unknown): string | null {
   if (!url || typeof url !== 'string') return null
-  if (!import.meta.env.DEV) return url
   try {
     const { pathname, search } = new URL(url)
     return pathname + search
