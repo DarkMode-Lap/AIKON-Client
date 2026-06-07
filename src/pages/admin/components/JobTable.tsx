@@ -35,7 +35,13 @@ type JobTableProps = {
   onEdit: (job: AdminJob) => void
 }
 
-export default function JobTable({ jobs, isRefreshing, onRefresh, onDelete, onEdit }: JobTableProps) {
+export default function JobTable({
+  jobs,
+  isRefreshing,
+  onRefresh,
+  onDelete,
+  onEdit,
+}: JobTableProps) {
   const [filter, setFilter] = useState<GenerationStatus | 'ALL'>('ALL')
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
