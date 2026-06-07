@@ -80,7 +80,7 @@ export default function EditAvatarModal({
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        className="relative w-full max-w-[480px] rounded-t-[24px] bg-white px-6 pb-8 pt-6 shadow-[0_-8px_40px_rgba(15,23,42,0.18)] sm:rounded-[20px] sm:px-8 sm:pb-8 sm:pt-7 sm:shadow-[0_20px_64px_rgba(15,23,42,0.22)]"
+        className="relative w-full max-w-[480px] rounded-t-[24px] bg-white px-6 pb-8 pt-6 shadow-xl sm:rounded-[20px] sm:px-8 sm:pb-8 sm:pt-7"
       >
         {/* Drag handle (mobile) */}
         <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-slate-200 sm:hidden" />
@@ -129,7 +129,7 @@ export default function EditAvatarModal({
                   onClick={() => setGender(active ? undefined : opt.value)}
                   className={`relative h-12 rounded-2xl text-sm font-black transition-all duration-200 ${
                     active
-                      ? 'bg-violet-500 text-white shadow-[0_4px_16px_rgba(139,92,246,0.38)]'
+                      ? 'bg-violet-500 text-white'
                       : 'border-2 border-slate-100 bg-slate-50 text-slate-500 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-500'
                   }`}
                 >
@@ -156,7 +156,7 @@ export default function EditAvatarModal({
                   onClick={() => setAgeRange(active ? undefined : opt.value)}
                   className={`h-11 rounded-2xl text-sm font-black transition-all duration-200 ${
                     active
-                      ? 'bg-violet-500 text-white shadow-[0_4px_16px_rgba(139,92,246,0.38)]'
+                      ? 'bg-violet-500 text-white'
                       : 'border-2 border-slate-100 bg-slate-50 text-slate-500 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-500'
                   }`}
                 >
@@ -181,7 +181,7 @@ export default function EditAvatarModal({
             type="button"
             onClick={handleSave}
             disabled={!canSave || isSaving}
-            className="h-12 rounded-2xl bg-violet-500 text-base font-black text-white shadow-[0_4px_14px_rgba(139,92,246,0.3)] transition-all hover:bg-violet-600 hover:shadow-[0_6px_20px_rgba(139,92,246,0.4)] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+            className="h-12 rounded-2xl bg-violet-500 text-base font-black text-white transition-colors hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {isSaving ? '저장 중…' : '저장'}
           </button>
