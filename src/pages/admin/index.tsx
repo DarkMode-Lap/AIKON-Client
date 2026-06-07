@@ -5,9 +5,13 @@ import {
   deleteAvatar,
   deleteAllAvatars,
   subscribeToAvatarChanges,
+  updateAvatar,
   type AvatarListItem,
+  type AvatarGender,
+  type AvatarAgeRange,
 } from '@/shared/api'
 import ConfirmModal from './components/ConfirmModal'
+import EditAvatarModal from './components/EditAvatarModal'
 import JobTable, { type AdminJob } from './components/JobTable'
 
 const STYLE_LABELS: Record<string, string> = {
@@ -57,6 +61,8 @@ function toAdminJob(avatar: AvatarListItem, index: number): AdminJob {
       ? (STATUS_LABELS[avatar.generationStatus] ?? avatar.generationStatus)
       : '-',
     generationStatus: avatar.generationStatus,
+    rawGender: avatar.gender,
+    rawAgeRange: avatar.ageRange,
     createdAt: formatCreatedAt(avatar.createdAt),
   }
 }
@@ -67,6 +73,7 @@ export default function AdminPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const [deleteJobId, setDeleteJobId] = useState<number | null>(null)
+  const [editJob, setEditJob] = useState<AdminJob | null>(null)
   const unsubRef = useRef<(() => void) | null>(null)
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -135,6 +142,37 @@ export default function AdminPage() {
     }
   }
 
+  async function handleEditConfirm(data: {
+    nickname: string
+    gender?: AvatarGender
+    ageRange?: AvatarAgeRange
+  }) {
+    if (!editJob?.dbId) return
+    try {
+      await updateAvatar(editJob.dbId, data)
+      setJobs((prev) =>
+        prev.map((j) => {
+          if (j.dbId !== editJob.dbId) return j
+          const genderLabel = data.gender ? (GENDER_LABELS[data.gender] ?? data.gender) : '-'
+          const ageLabel = data.ageRange ? (AGE_LABELS[data.ageRange] ?? data.ageRange) : '-'
+          return {
+            ...j,
+            nickname: data.nickname,
+            rawGender: data.gender,
+            rawAgeRange: data.ageRange,
+            profile: `${genderLabel}/${ageLabel}`,
+          }
+        }),
+      )
+      toast.success('수정되었습니다')
+      setEditJob(null)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '알 수 없는 오류'
+      toast.error(`수정 실패: ${msg}`)
+      throw e
+    }
+  }
+
   const waitingCount = jobs.filter((j) => j.generationStatus === 'WAITING').length
 
   return (
@@ -149,6 +187,7 @@ export default function AdminPage() {
           isRefreshing={isRefreshing}
           onRefresh={handleRefresh}
           onDelete={setDeleteJobId}
+          onEdit={setEditJob}
         />
         <DangerZone onReset={() => setIsResetModalOpen(true)} />
       </section>
@@ -169,6 +208,15 @@ export default function AdminPage() {
           primaryLabel="삭제"
           onClose={() => setDeleteJobId(null)}
           onConfirm={handleDeleteConfirm}
+        />
+      )}
+      {editJob !== null && (
+        <EditAvatarModal
+          initialNickname={editJob.nickname}
+          initialGender={editJob.rawGender}
+          initialAgeRange={editJob.rawAgeRange}
+          onClose={() => setEditJob(null)}
+          onConfirm={handleEditConfirm}
         />
       )}
     </main>
