@@ -25,8 +25,12 @@ export default function WallPage() {
         list
           .filter((a) => a.generationStatus === 'COMPLETED' && a.imageUrl)
           .sort((a, b) => {
-            if (!a.createdAt || !b.createdAt) return 0
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            const dateA = a.createdAt
+            const dateB = b.createdAt
+            if (!dateA && !dateB) return 0
+            if (!dateA) return 1
+            if (!dateB) return -1
+            return dateB.localeCompare(dateA)
           }),
       )
     })

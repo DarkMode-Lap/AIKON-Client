@@ -147,7 +147,7 @@ export default function AdminPage() {
     gender?: AvatarGender
     ageRange?: AvatarAgeRange
   }) {
-    if (!editJob?.dbId) return
+    if (editJob?.dbId === undefined) return
     try {
       await updateAvatar(editJob.dbId, data)
       setJobs((prev) =>
