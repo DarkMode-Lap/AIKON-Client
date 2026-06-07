@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { Download, Share2, RefreshCw } from 'lucide-react'
-import { STYLE_OPTIONS, AIKON_RANGE } from '@/shared/lib/constants'
+import { STYLE_OPTIONS } from '@/shared/lib/constants'
 import { useAvatarResult } from '@/features/avatar-result'
 
 function AvatarPlaceholder({ style, nickname }: { style: string; nickname: string }) {
@@ -18,14 +18,12 @@ function AvatarPlaceholder({ style, nickname }: { style: string; nickname: strin
   )
 }
 
-function toAikonNumber(id: string): number {
-  const hash = id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
-  return AIKON_RANGE.min + (hash % (AIKON_RANGE.max - AIKON_RANGE.min + 1))
-}
-
 export default function ResultPage() {
   const navigate = useNavigate()
-  const { id, nickname, style, imageUrl, passUrl, handleDownload, handleShare } = useAvatarResult()
+  const { id, nickname, style, imageUrl, passUrl, avatarData, handleDownload, handleShare } =
+    useAvatarResult()
+
+  const aikonNumber = /\d+$/.exec(avatarData?.passUrl ?? '')?.[0] ?? id
 
   return (
     <div className="fade-in relative min-h-dvh bg-white flex flex-col items-center px-4 py-6 overflow-hidden">
@@ -69,7 +67,7 @@ export default function ResultPage() {
             <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-500 to-pink-500 font-black text-lg">
               Aikon
             </span>
-            <span className="text-gray-400 font-bold text-sm">#{toAikonNumber(id)}</span>
+            <span className="text-gray-400 font-bold text-sm">#{aikonNumber}</span>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-gray-100">
             <QRCodeSVG value={passUrl} size={140} bgColor="#ffffff" fgColor="#1e0f3f" level="M" />
