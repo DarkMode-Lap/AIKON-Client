@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-const API_TARGET = 'https://ssh.gsmsv.site:32641'
+const API_TARGET = 'https://dark.mode.gsmsv.site'
 const AIKON_TARGET = 'http://ssh.gsmsv.site:36375'
 
 function getNetworkIP(): string | null {
