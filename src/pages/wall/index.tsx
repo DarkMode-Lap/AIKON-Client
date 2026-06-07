@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { subscribeToAvatarChanges, type AvatarListItem } from '@/shared/api'
 import { AvatarGrid } from '@/widgets/avatar-wall'
 
-const PARTICIPATE_URL = `${window.location.origin}/create`
+const PARTICIPATE_URL = window.location.origin
 
 const PARTICLES = [
   { emoji: '⭐', left: '6%', top: '12%', dur: 3.5, delay: 0 },
@@ -121,7 +121,7 @@ export default function WallPage() {
             </p>
             <div className="flex flex-col items-center gap-2 rounded-3xl border-2 border-violet-100 bg-violet-50 p-4 shadow-sm">
               <QRCodeSVG value={PARTICIPATE_URL} size={160} />
-              <p className="text-xs font-semibold text-gray-400">{window.location.host}/create</p>
+              <p className="text-xs font-semibold text-gray-400">{window.location.host}</p>
             </div>
             <p className="mt-4 text-center text-base font-black text-gray-800">QR 스캔하기</p>
             <p className="mt-1 text-center text-xs leading-5 text-gray-400">
