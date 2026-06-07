@@ -39,6 +39,16 @@ export function deleteAllAvatars(): Promise<void> {
   return apiClient.delete<void>('/avatars')
 }
 
+export type UpdateAvatarBody = {
+  nickname?: string
+  gender?: AvatarGender
+  ageRange?: AvatarAgeRange
+}
+
+export function updateAvatar(avatarId: number, body: UpdateAvatarBody): Promise<AvatarResponse> {
+  return apiClient.patch<AvatarResponse>(`/avatars/${avatarId}`, body)
+}
+
 export type AvatarListItem = {
   id?: number
   nickname: string
