@@ -27,7 +27,7 @@ export default function HomePage() {
         <p className="fade-in-2 text-sm text-gray-400">나만의 AI 캐릭터를 만들어보세요</p>
       </div>
 
-      <div className="relative z-10 w-full pb-8">
+      <div className="relative z-10 w-full pb-safe">
         <motion.button
           className="fade-in-3 btn-magic w-full py-4 text-white text-base font-bold"
           whileTap={{ scale: 0.97 }}

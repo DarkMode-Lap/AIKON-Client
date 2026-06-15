@@ -98,6 +98,12 @@ body {
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
 }
 
+/* Safe-area bottom padding — 2rem gap above iOS home bar, fallback for no env() support */
+.pb-safe {
+  padding-bottom: 2rem;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+}
+
 /* Table scrollbar — thin vertical only */
 .scrollbar-thin-y {
   scrollbar-width: thin;
