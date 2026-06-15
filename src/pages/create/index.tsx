@@ -25,7 +25,7 @@ export default function CreatePage() {
   const [form, setForm] = useState<CreateFormData>({
     nickname: '',
     style: null,
-    ageGroup: null,
+    ageGroup: '14-19', // 기본 선택, 사용자가 변경 가능
     gender: null,
     photoFile: null,
     photoPreview: null,
