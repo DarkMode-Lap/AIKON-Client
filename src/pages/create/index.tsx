@@ -10,7 +10,11 @@ import toast from 'react-hot-toast'
 
 const EASE = [0.25, 0.46, 0.45, 0.94] as const
 
-const TOTAL_STEPS = 4
+const SINGLE_STYLE = import.meta.env.VITE_SINGLE_STYLE === 'true'
+const FIXED_STYLE: AvatarStyle = 'disney'
+const TOTAL_STEPS = SINGLE_STYLE ? 3 : 4
+const DEMO_STEP = SINGLE_STYLE ? 2 : 3
+const PHOTO_STEP = SINGLE_STYLE ? 3 : 4
 
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? 16 : -16, opacity: 0 }),
@@ -24,7 +28,7 @@ export default function CreatePage() {
   const [dir, setDir] = useState(1)
   const [form, setForm] = useState<CreateFormData>({
     nickname: '',
-    style: null,
+    style: SINGLE_STYLE ? FIXED_STYLE : null,
     ageGroup: '14-19', // 기본 선택, 사용자가 변경 가능
     gender: null,
     photoFile: null,
@@ -41,9 +45,9 @@ export default function CreatePage() {
 
   function canProceed(): boolean {
     if (step === 1) return form.nickname.trim().length >= 2
-    if (step === 2) return form.style !== null
-    if (step === 3) return form.ageGroup !== null && form.gender !== null
-    if (step === 4) return form.photoPreview !== null
+    if (!SINGLE_STYLE && step === 2) return form.style !== null
+    if (step === DEMO_STEP) return form.ageGroup !== null && form.gender !== null
+    if (step === PHOTO_STEP) return form.photoPreview !== null
     return true
   }
 
@@ -162,13 +166,13 @@ export default function CreatePage() {
                 onRandom={() => setForm((f) => ({ ...f, nickname: randomNickname() }))}
               />
             )}
-            {step === 2 && (
+            {!SINGLE_STYLE && step === 2 && (
               <StepStyle
                 selected={form.style}
                 onSelect={(style: AvatarStyle) => setForm((f) => ({ ...f, style }))}
               />
             )}
-            {step === 3 && (
+            {step === DEMO_STEP && (
               <StepDemographic
                 ageGroup={form.ageGroup}
                 gender={form.gender}
@@ -176,7 +180,7 @@ export default function CreatePage() {
                 onGender={(gender: Gender) => setForm((f) => ({ ...f, gender }))}
               />
             )}
-            {step === 4 && (
+            {step === PHOTO_STEP && (
               <StepPhoto
                 preview={form.photoPreview}
                 fileInputRef={fileInputRef}
