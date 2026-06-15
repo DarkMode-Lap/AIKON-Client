@@ -1,0 +1,1 @@
+export { FooterBadge } from './FooterBadge'
