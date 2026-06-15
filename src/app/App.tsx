@@ -1,11 +1,13 @@
 import { RouterProvider } from 'react-router'
 import { Toaster } from 'react-hot-toast'
 import { router } from './router'
+import { FooterBadge } from '@/shared/ui'
 
 export default function App() {
   return (
     <>
       <RouterProvider router={router} />
+      <FooterBadge />
       <Toaster
         position="top-center"
         toastOptions={{
