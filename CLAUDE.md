@@ -76,6 +76,7 @@ Never do any of the following:
 - **No inline styles** — use Tailwind classes only
 - **No cross-layer imports in FSD** — e.g., `features` must not import from `pages`
 - **No committing to `main` or `develop`** — always use a feature branch + PR
+- **No PRs to `main`** — every PR targets `develop`; `main` is updated only by a maintainer's release PR
 - **No skipping CI gates** — do not use `--no-verify` or bypass lint/typecheck
 
 ## Commit Convention (Conventional Commits)
@@ -110,12 +111,16 @@ CI must pass before merging. Run `npm run typecheck && npm run lint && npm run f
 Direct pushes to `main` and `develop` are blocked by a git `pre-push` hook.
 Always work on a feature branch and open a PR. Use `/pr` to create the PR.
 
+**All PRs MUST target `develop` — never open a PR against `main`.**
+`main` only receives changes via a `develop` → `main` release PR opened by a maintainer.
+Claude must never create a PR to `main` or merge anything into `main`.
+
 Hook lives in `.githooks/pre-push` and registers automatically on `npm install`
 via the `prepare` script (`git config core.hooksPath .githooks`).
 
 ## GitHub
 
-- Repo: `DarkMode-Lab/AIKON-Client`
+- Repo: `DarkMode-Lap/AIKON-Client`
 - Default branch: `main`
 - PR template: `.github/pull_request_template.md`
 - Use `gh` CLI for PR operations (`/pr` command handles this)
