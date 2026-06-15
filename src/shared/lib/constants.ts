@@ -1,4 +1,4 @@
-import type { StyleOption, AvatarStyle } from '@/entities/avatar'
+import type { StyleOption } from '@/entities/avatar'
 
 export const STYLE_OPTIONS: StyleOption[] = [
   {
@@ -172,6 +172,3 @@ export const LOADING_MESSAGES = [
 ]
 
 export const AIKON_RANGE = { min: 500, max: 899 }
-
-// 자동 생성 모드의 단일 스타일 — 역할 1의 스타일 단일화 작업 시 이 값만 조정하면 됨
-export const AUTO_STYLE: AvatarStyle = 'disney'

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, ArrowLeft, ArrowRight, Camera, RefreshCw, Check, X } from 'lucide-react'
-import { STYLE_OPTIONS, AGE_GROUPS, GENDER_OPTIONS, AUTO_STYLE } from '@/shared/lib/constants'
+import { STYLE_OPTIONS, AGE_GROUPS, GENDER_OPTIONS } from '@/shared/lib/constants'
 import { cn, randomNickname } from '@/shared/lib/utils'
 import type { CreateFormData, AvatarStyle, AgeGroup, Gender } from '@/entities/avatar'
 import { compressImage } from '@/shared/lib/compressImage'
@@ -101,12 +101,13 @@ export default function CreatePage() {
     })
   }
 
-  // 스타일 자동 선택: 직접 고르지 않고 기본 스타일로 다음 단계 진행
+  // 스타일 자동 선택: 직접 고르지 않고 랜덤 스타일로 다음 단계 진행
   function handleStyleAuto() {
-    setForm((f) => ({ ...f, style: AUTO_STYLE }))
+    const style = STYLE_OPTIONS[Math.floor(Math.random() * STYLE_OPTIONS.length)].id
+    setForm((f) => ({ ...f, style }))
     setDir(1)
     setStep((s) => s + 1)
-    toast.success('스타일은 자동으로 골랐어요! ✨')
+    toast.success('스타일을 랜덤으로 골랐어요! ✨')
   }
 
   return (
