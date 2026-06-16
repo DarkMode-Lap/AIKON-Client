@@ -106,7 +106,8 @@ export default function CreatePage() {
     const style = STYLE_OPTIONS[Math.floor(Math.random() * STYLE_OPTIONS.length)].id
     setForm((f) => ({ ...f, style }))
     setDir(1)
-    setStep((s) => s + 1)
+    // 함수형 업데이터로 멱등 처리 — 빠른 더블클릭에도 2→3만, 단계 건너뛰기 방지
+    setStep((s) => (s === 2 ? 3 : s))
     toast.success('스타일을 랜덤으로 골랐어요! ✨')
   }
 
