@@ -105,6 +105,16 @@ export default function CreatePage() {
     })
   }
 
+  // 스타일 자동 선택: 직접 고르지 않고 랜덤 스타일로 다음 단계 진행
+  function handleStyleAuto() {
+    const style = STYLE_OPTIONS[Math.floor(Math.random() * STYLE_OPTIONS.length)].id
+    setForm((f) => ({ ...f, style }))
+    setDir(1)
+    // 함수형 업데이터로 멱등 처리 — 빠른 더블클릭에도 2→3만, 단계 건너뛰기 방지
+    setStep((s) => (s === 2 ? 3 : s))
+    toast.success('스타일을 랜덤으로 골랐어요! ✨')
+  }
+
   return (
     <div className="relative min-h-dvh bg-white flex flex-col items-center px-4 py-6 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -170,6 +180,7 @@ export default function CreatePage() {
               <StepStyle
                 selected={form.style}
                 onSelect={(style: AvatarStyle) => setForm((f) => ({ ...f, style }))}
+                onAuto={handleStyleAuto}
               />
             )}
             {step === DEMO_STEP && (
@@ -275,15 +286,34 @@ function StepNickname({
 function StepStyle({
   selected,
   onSelect,
+  onAuto,
 }: {
   selected: AvatarStyle | null
   onSelect: (s: AvatarStyle) => void
+  onAuto: () => void
 }) {
   return (
     <div className="glass-card p-6 space-y-4">
       <div>
         <h2 className="text-2xl font-black text-gray-900 mb-1">스타일을 골라요!</h2>
         <p className="text-sm text-gray-500">어떤 느낌의 캐릭터로 만들까요? 🎨</p>
+      </div>
+
+      <button
+        onClick={onAuto}
+        className="btn-magic w-full py-4 text-white flex items-center justify-center gap-2 text-sm font-bold"
+      >
+        <Sparkles className="w-4 h-4" />
+        자동으로 만들기 ✨
+      </button>
+      <p className="text-center text-xs text-gray-400 -mt-1">
+        고르기 어렵다면 AI가 알아서 멋지게 만들어드려요
+      </p>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-gray-200" />
+        <span className="text-xs text-gray-400 font-semibold">또는 직접 고르기</span>
+        <div className="h-px flex-1 bg-gray-200" />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
