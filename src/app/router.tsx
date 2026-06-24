@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react'
-import { createBrowserRouter, Navigate } from 'react-router'
+import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const HomePage = lazy(() => import('@/pages/home'))
 const CreatePage = lazy(() => import('@/pages/create'))
@@ -25,13 +27,29 @@ function wrap(El: React.ComponentType) {
   )
 }
 
+function RootLayout() {
+  const { pathname } = useLocation()
+  return (
+    <>
+      <Outlet />
+      <Analytics />
+      <SpeedInsights route={pathname} />
+    </>
+  )
+}
+
 export const router = createBrowserRouter([
-  { path: '/', element: wrap(HomePage) },
-  { path: '/create', element: wrap(CreatePage) },
-  { path: '/create/:aikonId', element: <Navigate to="/create" replace /> },
-  { path: '/loading', element: wrap(LoadingPage) },
-  { path: '/result/:id', element: wrap(ResultPage) },
-  { path: '/admin', element: wrap(AdminPage) },
-  { path: '/wall', element: wrap(WallPage) },
-  { path: '/pass/:passId', element: wrap(PassPage) },
+  {
+    element: <RootLayout />,
+    children: [
+      { path: '/', element: wrap(HomePage) },
+      { path: '/create', element: wrap(CreatePage) },
+      { path: '/create/:aikonId', element: <Navigate to="/create" replace /> },
+      { path: '/loading', element: wrap(LoadingPage) },
+      { path: '/result/:id', element: wrap(ResultPage) },
+      { path: '/admin', element: wrap(AdminPage) },
+      { path: '/wall', element: wrap(WallPage) },
+      { path: '/pass/:passId', element: wrap(PassPage) },
+    ],
+  },
 ])

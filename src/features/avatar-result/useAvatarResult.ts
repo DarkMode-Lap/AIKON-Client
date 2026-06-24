@@ -19,7 +19,7 @@ export function useAvatarResult(): UseAvatarResultReturn {
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
   const nickname = searchParams.get('nickname') ?? '친구'
-  const style = searchParams.get('style') ?? 'ghibli'
+  const style = searchParams.get('style') ?? 'disney'
 
   const [avatarData, setAvatarData] = useState<GetAvatarRes | null>(null)
 
