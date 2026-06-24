@@ -1,5 +1,7 @@
 import { RouterProvider } from 'react-router'
 import { Toaster } from 'react-hot-toast'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { router } from './router'
 import { FooterBadge } from '@/shared/ui'
 
@@ -8,6 +10,8 @@ export default function App() {
     <>
       <RouterProvider router={router} />
       <FooterBadge />
+      <Analytics />
+      <SpeedInsights />
       <Toaster
         position="top-center"
         toastOptions={{
